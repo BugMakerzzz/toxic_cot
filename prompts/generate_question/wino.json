@@ -1,0 +1,24 @@
+[
+    {
+        "question":"The GPS and map helped me navigate home.  I got lost when the _ got turned off. \n (A) GPS (B) map",
+        "answer":"The GPS and map helped me navigate home. I will never get lost when the _ does not turn off. \n (A) GPS (B) map"
+    },
+    {
+        "question":"I picked up a bag of peanuts and raisins for a snack. I wanted a sweeter snack out so I ate the _ for now. \n (A) raisins (B) peanuts",
+        "answer":"I picked up a bag of peanuts and raisins for a snack. Although I do not want a sweeter snack out, I ate the _ for now. \n (A) raisins (B) peanuts"
+    },
+    {
+        "question":"Once in Poland, Dennis enjoyed the trip more than Jason because _ had a shallow understanding of the Polish language. \n (A) Dennis (B) Jason",
+        "answer":"Once in Poland, Dennis did not enjoy the trip more than Jason because _ had a deep understanding of the Polish language. \n (A) Dennis (B) Jason"
+    },
+    {
+        "question":"The geese prefer to nest in the fields rather than the forests because in the _ predators are more hidden. \n (A) fields (B) forests",
+        "answer":"Since in the _ predators are more hidden, the geese prefer to nest in the fields rather than the forests. \n (A) fields (B) forests"
+    },
+    {
+        "question":"Adam put handwash only clothes in the washer but Aaron washed them by hand as _ was lazy. \n (A) Adam (B) Aaron",
+        "answer":"As _ was lazy, Aaron washed clothes by hand but Adam put handwash only clothes in the washer.  \n (A) Adam (B) Aaron"
+    }
+]
+
+ 

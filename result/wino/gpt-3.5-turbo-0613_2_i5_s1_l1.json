@@ -1,0 +1,12 @@
+[
+    {
+        "question": "Sarah was a much better surgeon than Maria so _ always got the easier cases.\n(1) Sarah (2) Maria ",
+        "answer": "If someone is described as a \"better\" surgeon, it implies that they have higher skills or expertise in their field. Getting easier cases typically indicates that a surgeon is trusted to handle less complex or challenging surgeries. Therefore, Sarah, being the better surgeon, would be the one who always gets the easier cases.\nSo the answer is: (1) Sarah.",
+        "pred": "1",
+        "label": "2",
+        "match": false
+    },
+    {
+        "acc": 0.0
+    }
+]

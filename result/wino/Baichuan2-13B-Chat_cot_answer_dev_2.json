@@ -1,0 +1,19 @@
+[
+    {
+        "question": "On the playground at school during recess, Monica called Emily a chicken because _ was capable of climbing the ladder.\n(1) Monica (2) Emily ",
+        "answer": " \nA person is called a chicken when he is afraid to do something. A person is capable of doing something means he can do it. If a person is called a chicken because he is capable of doing something, it means he is afraid to do it. Since Monica called Emily a chicken because she was capable of climbing the ladder, it means Emily was afraid to climb the ladder. \nSo the answer is: (1) Monica. \n</",
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true
+    },
+    {
+        "question": "At the beauty salon, Angela preferred to work on her eyebrows instead of her eyelashes because the _ were already worked on.\n(1) eyebrows (2) eyelashes ",
+        "answer": " \nA person may work on her eyebrows instead of her eyelashes because her eyebrows are already worked on. \nSo the answer is: (1) eyebrows. \n</",
+        "pred": "1",
+        "label": "2",
+        "cor_flag": false
+    },
+    {
+        "acc": 0.5
+    }
+]
