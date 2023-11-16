@@ -1,0 +1,19 @@
+[
+    {
+        "question": "Addison regarded every person carefully before they decided whom to talk to. How would you describe Addison?\n(1) happy that she acted that way (2) like she made a good choice (3) a nervous, calculated person ",
+        "answer": "\nAnswer: (3) a nervous, calculated person \n</",
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "Kai crowded around Sydney to help conserve heat. How would Sydney feel as a result?\n(1) protected as a result (2) felt warm (3) felt comforted ",
+        "answer": "\nAnswer: (2) felt warm \n</",
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "acc": 1.0
+    }
+]

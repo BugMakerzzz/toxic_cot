@@ -55,40 +55,37 @@ stop_criteria = KeywordsStoppingCriteria(stop_ids)
 
 correct = 0
 results = []
-
-
-correct = 0
-cnt = 0
-result = []
-corrects = [0] * 41
 for data in tqdm(dataloader):
-    cnt += 1
-    if 'question' not in data.keys():
-        break
     question = data['question']
-    cot = data['answer']
-    cots = split_cot(cot)
-    suffix = '\nSo the answer is:'
-    prefix = question
+    input = prompter.wrap_input(question, icl_cnt=5)
     label = data['label']
-    wr_label = '1' if label == '2' else '2'
-    options = question.split('\n')[-1].split(' ')
-    cor_answer = options[eval(label)*2-2] + ' ' + options[eval(label)*2-1]
-    wr_answer = options[eval(wr_label)*2-2] + ' ' + options[eval(wr_label)*2-1]
     torch.set_grad_enabled(False)
     model.eval()
-    scores = []
-    wr_scores = []
-    for cot in cots:
-        prefix += cot
-    for i in range(1, 41):
-        score, _, _  = lm_score(prefix+suffix, cor_answer, mature_layer=-1, premature_layer=i)
-        wr_score, _, _ = lm_score(prefix+suffix, wr_answer, mature_layer=-1, premature_layer=i)
-        if score > wr_score:
-            corrects[i] += 1
+    inputs = tokenizer(input, return_tensors="pt")
+    input_ids = inputs["input_ids"].to(model.device)
+    output = model.generate(
+            input_ids=input_ids,
+            return_dict_in_generate=True,
+            output_scores=True,
+            max_new_tokens=500,
+            stopping_criteria=[stop_criteria]
+        )
+    result = tokenizer.decode(output.sequences[0]).split(' [/INST] ')[-1]
+    pred = result.split(':')[-1]
+    match = re.findall(r'[1-5]\)',pred)
+    if match:
+        pred = match[-1][:-1]
     else:
-        result.append({'question': question, 'answer':cot, 'label':label})
-    # if cnt >= 100:
-    #     break
-for correct in corrects:        
-    print(correct / cnt)
+        pred = 'None'
+    cor_flag = (pred == label)
+    if cor_flag:
+        correct += 1
+    msg = {'question':question, 'answer':result, 'pred':pred, 'label':label, 'cor_flag':cor_flag}
+    results.append(msg)
+    del input_ids
+    del output
+    
+results.append({'acc':correct/datalength})
+print(f'Acc:{correct/datalength}')
+with open(result_path, 'w', encoding='utf-8') as f:
+    json.dump(results, f, indent=4)
