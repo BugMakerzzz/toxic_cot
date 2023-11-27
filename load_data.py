@@ -3,6 +3,8 @@ import random
 import re
 random.seed(17)
 
+csqa_train_data_path = './data/CommonsenseQA/train_rand_split.jsonl'
+csqa_dev_data_path = './data/CommonsenseQA/dev_rand_split.jsonl'
 
 wino_train_data_path = './data/winogrande_1.1/train_l.jsonl'
 wino_dev_data_path = './data/winogrande_1.1/dev.jsonl'
@@ -28,7 +30,7 @@ class DataLoader():
         self.__idx = 0
         self.__len = data_length
         self.__load_data(dataset, split=split)
-        if shuffle:
+        if shuffle and dataset != 'hella':
             self.__shuffle_data()
     
     def __load_labels(self, label_path):
@@ -40,7 +42,12 @@ class DataLoader():
     
     
     def __load_data(self, dataset, split):
-        if dataset == 'wino':
+        if dataset == 'csqa':
+            if split == 'train':
+                datapath = csqa_train_data_path
+            else:
+                datapath = csqa_dev_data_path
+        elif dataset == 'wino':
             if split == 'train':
                 datapath = wino_train_data_path
             else:
@@ -69,7 +76,14 @@ class DataLoader():
                 label = ""
                 answer = ""
                 options = []
-                if dataset == 'wino':
+                if dataset == 'csqa':
+                    question = data['question']['stem']
+                    label = str(ord(data['answerKey']) - ord("A") + 1)
+                    options = []
+                    for i in range(len(data['question']['choices'])):
+                        tup = data['question']['choices'][i]
+                        options.append(tup['text'])
+                elif dataset == 'wino':
                     question = data['sentence']
                     label = data['answer']
                     options = [data['option1'], data['option2']]
