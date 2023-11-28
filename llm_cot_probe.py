@@ -22,12 +22,14 @@ random.seed(17)
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='Llama-2-13b-chat-hf')
 parser.add_argument('--dataset', type=str, default='wino')
-parser.add_argument('--datalength', type=int, default=100)
+parser.add_argument('--datalength', type=int, default=1000)
 # parser.add_argument('--mode', type=str, default='acc')
 # parser.add_argument('--cot_mode', type=str, default=['full', 'none'])
 parser.add_argument('--mode', type=str, default='IWP')
-parser.add_argument('--diff', type=str, default=None)
+parser.add_argument('--diff_cot', type=str, default=None)
+parser.add_argument('--diff_logit', type=str, default=None)
 parser.add_argument('--avg', type=str, default=None)
+parser.add_argument('--cnt', type=int, default=20)
 args = parser.parse_args()
 
 
@@ -37,13 +39,15 @@ datalength = args.datalength
 # mode = args.mode
 # cot_mode = args.cot_mode
 mode = args.mode
-diff = args.diff
+diff_logit = args.diff_logit
+diff_cot = args.diff_cot
 avg = args.avg
+cnt = args.cnt
 
 model_path = f'./model/{model_name}'
 cot_file_path  = f'./result/{dataset}/{model_name}_cot_answer_dev_{datalength}.json'
 base_file_path = f'./result/{dataset}/{model_name}_direct_answer_dev_{datalength}.json'
-result_path = f'./result/{dataset}/fig/{model_name}_{mode}_dev_{datalength}_{diff}'
+result_path = f'./result/{dataset}/fig/{model_name}_{mode}_dev_{datalength}_{diff_logit}-dl_{diff_cot}-dc_{cnt}-cnt'
 
 
 config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
@@ -269,34 +273,50 @@ def lm_score(question_text, pred_text, layers):
             output_hidden_states=False,
             early_exit_layers=layers,
         )
+        
         scores = []
         for layer in layers:
             logits = dict_outputs[layer][0, prefix_ids.shape[-1] - 1: -1, :]
             logits = logits.log_softmax(dim=-1)
-            probs = logits[range(logits.shape[0]), continue_ids].sum().item()
-            scores.append(probs)
+            if not diff_logit:
+                probs = logits[range(logits.shape[0]), continue_ids].sum().item()
+            else:
+                if layer == 0:
+                    continue
+                if diff_logit == 'base':
+                    base_logits = dict_outputs[0][0, prefix_ids.shape[-1] - 1: -1, :]
+                    base_logits = base_logits.log_softmax(dim=-1)
+                else:
+                    base_layer = layers[layers.index(layer)-1]
+                    base_logits = dict_outputs[base_layer][0, prefix_ids.shape[-1] - 1: -1, :]
+                    base_logits = base_logits.log_softmax(dim=-1)
+                diff_logits = logits - base_logits
+                diff_logits = diff_logits.log_softmax(dim=-1)
+                probs = diff_logits[range(diff_logits.shape[0]), continue_ids].sum().item()
+            scores.append(probs)    
         torch.cuda.empty_cache()
-        if diff == 'layer':
+        if diff_logit == 'adj':
             scores = np.array(scores)
             scores = np.diff(scores,axis=-1).tolist()
-            print(scores)
     return scores
 
 
 def cot_avg(scores, avg):
     if avg == 'norm':
-        max_len = 0
-        layers = 0
-        for score in scores:
-            layers = len(score[0])
-            if len(score) > max_len:
-                max_len = len(score)
-        avg_scores = np.ma.empty((max_len, layers, len(scores))) 
-        avg_scores.mask = True
-        for i in range(len(scores)):
-            score = np.array(scores[i])
-            avg_scores[:score.shape[0], :score.shape[1], i] = score            
-        scores = avg_scores.mean(axis=-1).tolist()[:5]
+        if diff_cot == 'full-step':
+            scores = np.array(scores).mean(axis=1).tolist()
+        else:
+            max_len = 0
+            for score in scores:
+                layer_len = len(score[0])
+                if len(score) > max_len:
+                    max_len = len(score)
+            avg_scores = np.ma.empty((max_len, layer_len, len(scores))) 
+            avg_scores.mask = True
+            for i in range(len(scores)):
+                score = np.array(scores[i])
+                avg_scores[:score.shape[0], :score.shape[1], i] = score            
+            scores = avg_scores.mean(axis=-1).tolist()[:5]
     elif avg == 'steps':
         score_dic = {}
         for score in scores:
@@ -343,7 +363,7 @@ def probe(case_index, layers):
             options = question.split('\n')[-1].split('(')
             label_option = ' (' + options[eval(label)]
             pred_option = ' (' + options[eval(pred)]
-        ###暂时去掉base_question，可以留作以后的消融
+        ###暂时去掉base_question,可以留作以后的消融
         # base_question = base_prompter.wrap_input(question, icl_cnt=5)
         # pred_scores = [lm_score(base_question+' Answer: ', pred_option, layers)]
         # label_scores = [lm_score(base_question+' Answer: ', label_option, layers)]
@@ -363,18 +383,35 @@ def probe(case_index, layers):
             pred_legends.append(f'pred_step_{i}')
             label_legends.append(f'label_step_{i}')
         x_range = layers
-        if diff == 'layer':
+        if diff_logit:
             x_range = x_range[1:]
-        elif diff == 'cot':
+        if diff_cot == 'adj-step':
             pred_scores = np.diff(np.array(pred_scores), axis=0).tolist()
             label_scores = np.diff(np.array(label_scores), axis=0).tolist()
             pred_legends = pred_legends[1:]
             label_legends = label_legends[1:]
-        elif diff == 'last_cot':
-            pred_scores = [np.diff(np.array(pred_scores), axis=0).tolist()[-1]]
-            label_scores = [np.diff(np.array(label_scores), axis=0).tolist()[-1]]
-            pred_legends = ['pred_last_cot']
-            label_legends = ['label_last_cot']
+        elif diff_cot == 'full-step':
+            pred_scores = np.array(pred_scores)
+            pred_scores = [(pred_scores - pred_scores[0,:])[-1,:].tolist()]
+            label_scores = np.array(label_scores)
+            label_scores = [(label_scores - label_scores[0,:])[-1,:].tolist()]
+            pred_legends = ['pred_full_cot']
+            label_legends = ['label_full_cot']
+        elif diff_cot == 'norm-step':
+            pred_scores = np.array(pred_scores)
+            pred_scores = (pred_scores - pred_scores[0,:])[1:,:].tolist()
+            label_scores = np.array(label_scores)
+            label_scores = (label_scores - label_scores[0,:])[1:,:].tolist()
+            pred_legends = pred_legends[1:]
+            label_legends = label_legends[1:]
+        elif diff_cot == 'sub-dir':
+            pred_scores = np.array(pred_scores)
+            direct_scores = pred_scores[0,:]
+            pred_scores = (pred_scores - direct_scores)[1:,:].tolist()
+            label_scores = np.array(label_scores)
+            label_scores = (label_scores - direct_scores)[1:,:].tolist()
+            pred_legends = pred_legends[1:]
+            label_legends = label_legends[1:]
         if avg:
             pred_scores_ls.append(pred_scores)
             label_scores_ls.append(label_scores)
@@ -449,13 +486,13 @@ def probe(case_index, layers):
 #                 legend_list.append(f'label_{mode}_{case}')
 #     return score_list, legend_list
 
-case_index = merge_data(mode)[:20]
-
+case_index = merge_data(mode)
+   
 if not case_index:
-    case_index = [13,15]
-layers = [1, 5, 10, 15, 20, 25, 30, 35, 40]
+    case_index = [10,11,13,15,16,27,28,40,47,49]
+case_index = case_index[:cnt]
+layers = [0, 5, 10, 15, 20, 25, 30, 35, 40]
 
-print(case_index)
 probe(case_index=case_index, layers=layers)
 # question = "What is the least likely immediate side effect of eating hamburger?\n(1) nausea (2) death (3) illness (4) health problems (5) gain weight ",
 # steps = [" Hamburger is a food, and eating it will not cause immediate death."]
