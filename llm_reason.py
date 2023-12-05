@@ -146,6 +146,7 @@ parser.add_argument('--datalength', type=int, default=2)
 parser.add_argument('--split', type=str, default='dev')
 parser.add_argument('--dataset', type=str, default='siqa')
 parser.add_argument('--task', type=str, default='direct_answer')
+parser.add_argument('--icl', type=int, default=5)
 args = parser.parse_args()
 
 
@@ -154,6 +155,7 @@ dataset = args.dataset
 datalength = args.datalength
 split = args.split
 task = args.task
+icl = args.icl
 model_path = f'./model/{model_name}'
 result_path = f'./result/{dataset}/{model_name}_{task}_{split}_{datalength}.json'
 
@@ -186,7 +188,7 @@ correct = 0
 results = []
 for data in tqdm(dataloader):
     question = data['question']
-    input = prompter.wrap_input(question, icl_cnt=5)
+    input = prompter.wrap_input(question, icl_cnt=icl)
     label = data['label']
     torch.set_grad_enabled(False)
     model.eval()
@@ -197,7 +199,7 @@ for data in tqdm(dataloader):
             return_dict_in_generate=True,
             output_scores=True,
             max_new_tokens=500,
-            stopping_criteria=[stop_criteria]
+            stopping_criteria=[stop_criteria],
         )
     result = tokenizer.decode(output.sequences[0]).split(' [/INST] ')[-1]
     pred = result.split(':')[-1]

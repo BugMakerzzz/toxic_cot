@@ -19,7 +19,7 @@ class Prompter():
         
     
     def load_examples(self, icl_cnt):
-        if not icl_cnt:
+        if icl_cnt == 0:
             return ""
         else:
             example_path = f'./prompts/{self.task}/{self.dataset}.json'
@@ -42,7 +42,10 @@ class Prompter():
     def wrap_input(self, msg, icl_cnt):
         sys_msg = self.load_sys_instruction()
         example_msg = self.load_examples(icl_cnt=icl_cnt)
+        if not example_msg and self.task == 'cot_answer':
+            msg += " Let's think step by step: "
         user_msg = self.user_prompt.format(msg)
+        
         return sys_msg + example_msg + user_msg
                 
                 
