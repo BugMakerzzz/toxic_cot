@@ -1,23 +1,23 @@
 [
     {
-        "question":"Quinn wanted to help me clean my room up because it was so messy. What will Quinn want to do next? \n (1) Eat messy snacks (2) help out a friend (3) Pick up the dirty clothes ",
-        "answer":"Quinn want to clean the room up. Picking up the dirty clothes is one way to clean the room. Thus, quinn will want to pick up the dirty clothes next. So the answer is: (3) Pick up the dirty clothes"
+        "question":"Quinn wanted to help me clean my room up because it was so messy. What will Quinn want to do next? \n (1) Eat messy snacks (2) help out a friend (3) Pick up the dirty clothes\nAnswer: (3) Pick up the dirty clothes ",
+        "answer":"Reason: Quinn want to clean the room up. Picking up the dirty clothes is one way to clean the room. Thus, quinn will want to pick up the dirty clothes next."
     },
     {
-        "question":"Sasha's mom passed out in the middle of the party. Aubrey took Sasha's mom to the hospital. What will Aubrey want to do next? \n (1) help Aubrey go back home (2) keep on partying without the mom (3) going on with the mom ",
-        "answer":"Sasha's mom is sent to the hospital beacuse she passes out. After that, she becomes a patient. A patient needs to be cared for. Aubrey may need to take care of her. Thus, Aubrey will go on with the mom. So the answer is: (3) going on with the mom"
+        "question":"Sasha's mom passed out in the middle of the party. Aubrey took Sasha's mom to the hospital. What will Aubrey want to do next? \n (1) help Aubrey go back home (2) keep on partying without the mom (3) going on with the mom\nAnswer: (3) going on with the mom",
+        "answer":"Reason: Sasha's mom is sent to the hospital beacuse she passes out. After that, she becomes a patient. A patient needs to be cared for. Aubrey may need to take care of her. Thus, Aubrey will go on with the mom."
     },
     {
-        "question":"Their cat kept trying to escape out of the window, so Jan placed an obstacle in the way. How would Jan feel afterwards? \n (1) scared of losing the cat (2) normal (3) relieved for fixing the problem ",
-        "answer":"The cat try to escape so Jan need to stop it to avoid losing the cat. Jan place an obstacle in the way so the cat can not escape. The problem is been solved. Thus, Jan will fell relieved for fixing the problem. So the answer is: (3) relieved for fixing the problem"
+        "question":"Their cat kept trying to escape out of the window, so Jan placed an obstacle in the way. How would Jan feel afterwards? \n (1) scared of losing the cat (2) normal (3) relieved for fixing the problem\nAnswer: (3) relieved for fixing the problem",
+        "answer":"Reason: The cat try to escape so Jan need to stop it to avoid losing the cat. Jan place an obstacle in the way so the cat can not escape. The problem is been solved. Thus, Jan will fell relieved for fixing the problem."
     },
     {
-        "question":"Sydney had so much pent up emotion, they burst into tears at work. How would Sydney feel afterwards? \n (1) affected (2) like they released their tension (3) worse ",
-        "answer":"Crying is often a way to release tension. Sydney burst into tears at work. Thus, she would release the tension. So the answer is: (2) like they released their tension"
+        "question":"Sydney had so much pent up emotion, they burst into tears at work. How would Sydney feel afterwards? \n (1) affected (2) like they released their tension (3) worse\nAnswer: (2) like they released their tension",
+        "answer":"Reason: Crying is often a way to release tension. Sydney burst into tears at work. Thus, she would release the tension."
     },
     {
-        "question":"Sydney got a raise and a new promotion. What does Sydney need to do before this? \n (1) be bad at her job (2) do a good job (3) be lazy ",
-        "answer":"To get a raise and a new promotion, Sydney needs to work hard and do a good job. Sydney got a raise and a new promotion. Thus, she need to do a good job before this. So the answer is: (2) do a good job"
+        "question":"Sydney got a raise and a new promotion. What does Sydney need to do before this? \n (1) be bad at her job (2) do a good job (3) be lazy\nAnswer: (2) do a good job",
+        "answer":"Reason: To get a raise and a new promotion, Sydney needs to work hard and do a good job. Sydney got a raise and a new promotion. Thus, she need to do a good job before this."
     }
 ]
 

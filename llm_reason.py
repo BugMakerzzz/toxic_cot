@@ -147,6 +147,7 @@ parser.add_argument('--split', type=str, default='dev')
 parser.add_argument('--dataset', type=str, default='siqa')
 parser.add_argument('--task', type=str, default='direct_answer')
 parser.add_argument('--icl', type=int, default=5)
+parser.add_argument('--search', type=str, default='greedy')
 args = parser.parse_args()
 
 
@@ -156,8 +157,11 @@ datalength = args.datalength
 split = args.split
 task = args.task
 icl = args.icl
+search = args.search
 model_path = f'./model/{model_name}'
 result_path = f'./result/{dataset}/{model_name}_{task}_{split}_{datalength}.json'
+if search == 'beam':
+    result_path = f'./result/{dataset}/{model_name}_{task}_{split}_{datalength}_beam.json'
 
 config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
 with init_empty_weights():
@@ -194,15 +198,41 @@ for data in tqdm(dataloader):
     model.eval()
     inputs = tokenizer(input, return_tensors="pt")
     input_ids = inputs["input_ids"].to(model.device)
-    output = model.generate(
-            input_ids=input_ids,
-            return_dict_in_generate=True,
-            output_scores=True,
-            max_new_tokens=500,
-            stopping_criteria=[stop_criteria],
-        )
-    result = tokenizer.decode(output.sequences[0]).split(' [/INST] ')[-1]
-    pred = result.split(':')[-1]
+    if search == 'greedy':
+        output = model.generate(
+                input_ids=input_ids,
+                return_dict_in_generate=True,
+                output_scores=True,
+                max_new_tokens=500,
+                stopping_criteria=[stop_criteria],
+            )
+        result = tokenizer.decode(output.sequences[0]).split(' [/INST] ')[-1]
+        pred = result.split(':')[-1]
+    elif search == 'beam':
+        output = model.generate(
+                input_ids=input_ids,
+                return_dict_in_generate=True,
+                output_scores=True,
+                max_new_tokens=500,
+                num_beams=5,
+                # diversity_penalty=1.0,
+                do_sample=True,
+                temperature=1.3,
+                # num_beam_groups=3,
+                top_k=7,
+                top_p=0.9,
+                num_return_sequences=3,
+                stopping_criteria=[stop_criteria],
+            )
+        result_ls = []
+        preds = []
+        for i in range(3):
+            result = tokenizer.decode(output.sequences[i]).split(' [/INST] ')[-1]
+            pred = result.split(':')[-1].strip()
+            preds.append(pred)
+            result_ls.append(result)
+        pred = max(preds,key=preds.count)
+        result = result_ls
     if dataset == 'gsm8k':
         match = re.findall(r'[+-]?\d+',pred)
         if match:
@@ -222,6 +252,7 @@ for data in tqdm(dataloader):
     results.append(msg)
     del input_ids
     del output
+    torch.cuda.empty_cache()
     
 results.append({'acc':correct/datalength})
 print(f'Acc:{correct/datalength}')

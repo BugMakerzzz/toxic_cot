@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 
 def draw_plot(layers, scores, labels, path):
     x_values = layers
@@ -32,7 +33,13 @@ def draw_acc(layers, scores, label, path):
     # 添加图例
     plt.legend()
     plt.savefig(path)
-  
+    plt.close()
+
+def draw_heat(layers, index, scores, path):
+    sns.set()
+    ax=sns.heatmap(scores, vmin=-10,vmax=20, cmap="RdBu_r", center=0, xticklabels=layers, yticklabels=index)
+    plt.savefig(path)
+    plt.close()
   
   
     

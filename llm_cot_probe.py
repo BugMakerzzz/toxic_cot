@@ -14,39 +14,37 @@ from prompts.wrap_prompt import LlamaPrompter
 from load_data import DataLoader
 from accelerate import init_empty_weights, load_checkpoint_and_dispatch
 from transformers.generation.stopping_criteria import StoppingCriteria, StoppingCriteriaList
-from metrics import draw_plot
+from metrics import draw_plot,draw_heat
 random.seed(17)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='Llama-2-13b-chat-hf')
 parser.add_argument('--dataset', type=str, default='wino')
-parser.add_argument('--datalength', type=int, default=1000)
-# parser.add_argument('--mode', type=str, default='acc')
-# parser.add_argument('--cot_mode', type=str, default=['full', 'none'])
-parser.add_argument('--mode', type=str, default='IWP')
+parser.add_argument('--mode', type=str, default='C2W')
 parser.add_argument('--diff_cot', type=str, default=None)
 parser.add_argument('--diff_logits', type=str, default=None)
 parser.add_argument('--avg', type=str, default=None)
-parser.add_argument('--cnt', type=int, default=20)
-parser.add_argument('--reg', type=bool, default=False)
+parser.add_argument('--cnt', type=int, default=50)
+parser.add_argument('--reg', action='store_true')
+parser.add_argument('--split', action='store_true')
+parser.add_argument('--direct', action='store_true')
 args = parser.parse_args()
 
 
 model_name = args.model
 dataset = args.dataset
-# datalength = args.datalength
-# mode = args.mode
-# cot_mode = args.cot_mode
 mode = args.mode
 diff_logits = args.diff_logits
 diff_cot = args.diff_cot
 avg = args.avg
 cnt = args.cnt
 reg = args.reg
+direct = args.direct
+split = args.split
 model_path = f'./model/{model_name}'
-cot_file_path  = f'./result/{dataset}/{model_name}_cot_answer_dev_1000.json'
-base_file_path = f'./result/{dataset}/{model_name}_direct_answer_dev_1000.json'
-result_path = f'./result/{dataset}/fig/{model_name}_{mode}_{diff_logits}-dl_{diff_cot}-dc_{cnt}-cnt_{reg}-reg'
+cot_file_path  = f'./result/{dataset}/{model_name}_cot_answer_dev_100.json'
+base_file_path = f'./result/{dataset}/{model_name}_direct_answer_dev_100.json'
+result_path = f'./result/{dataset}/fig/{model_name}_{mode}_{diff_logits}-dl_{diff_cot}-dc_{cnt}-cnt_{reg}-reg_{split}-split_{direct}-direct'
 full_cot_path = f'./result/{dataset}/{model_name}_cot_dev_1000.json'
 
 config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
@@ -106,7 +104,7 @@ def merge_data(mode):
     return results
 
 
-def lm_logit(question_text, pred_text, layers, diff_logits):
+def cal_logits(question_text, pred_text, layers, diff_logits):
     input_text = question_text + pred_text
     input_ids = tokenizer(input_text, return_tensors="pt").input_ids.to(model.device)
     prefix_ids = tokenizer(question_text, return_tensors="pt").input_ids.to(model.device)
@@ -123,13 +121,13 @@ def lm_logit(question_text, pred_text, layers, diff_logits):
     for layer in layers:
         logits = dict_outputs[layer][0, prefix_ids.shape[-1] - 1: -1, :]
         logits = logits.log_softmax(dim=-1)
-        if diff_logits:
+        if diff_logits and diff_logits != 'score':
             if layer == 0:
                 continue
             if diff_logits == 'base':
                 base_logits = dict_outputs[0][0, prefix_ids.shape[-1] - 1: -1, :]
                 base_logits = base_logits.log_softmax(dim=-1)
-            else:
+            elif diff_logits == 'adj':
                 base_layer = layers[layers.index(layer)-1]
                 base_logits = dict_outputs[base_layer][0, prefix_ids.shape[-1] - 1: -1, :]
                 base_logits = base_logits.log_softmax(dim=-1)
@@ -143,7 +141,7 @@ def lm_logit(question_text, pred_text, layers, diff_logits):
     return scores, continue_ids
 
 
-def cal_score(logits_ls, ids_ls, diff_cot, diff_score=True):
+def cal_score(logits_ls, ids_ls, diff_cot, diff_logits):
     scores = []
     for i in range(len(logits_ls)):
         logits = np.array(logits_ls[i])
@@ -160,30 +158,37 @@ def cal_score(logits_ls, ids_ls, diff_cot, diff_score=True):
         if diff_cot:
             logits = logits - base_logits
 
-        probs = logits[:,range(logits.shape[1]), ids].sum(axis=-1)
-        if diff_score:
+        if diff_logits == 'score':
+            probs = logits[:,range(logits.shape[1]), ids].sum(axis=-1)
             probs = (probs - probs[0])[1:].tolist()
+        else:
+            probs = logits[:,range(logits.shape[1]), ids].sum(axis=-1).tolist()
+        
         scores.append(probs)
 
     return scores 
 
 
-def cot_score(question, pred, cot, layers, diff_cot=None, diff_logits=None, merge_cot=True):
+def cot_score(question, pred, cot, layers, direct=False, split=False, diff_cot=None, diff_logits=None):
     with torch.no_grad():
         pred_ids = []
         pred_logits = []
         pred_scores = []
-        if merge_cot:
-            cot = ['.'.join(cot)]
+        if split:
+            cot = cot.split('.')
+        else:
+            cot = [cot]
         for i in range(len(cot)+1):
             if i == 0:
                 cot_question = cot_prompter.wrap_input(question, icl_cnt=5)   
+                if not direct:
+                    continue
             else:
                 cot_question += cot[i-1] + '.'
-            logits, ids = lm_logit(cot_question+' So the answer is: ', pred, layers, diff_logits)
+            logits, ids = cal_logits(cot_question+' So the answer is: ', pred, layers, diff_logits)
             pred_logits.append(logits)
             pred_ids.append(ids)
-        pred_scores = cal_score(pred_logits, pred_ids, diff_cot)
+        pred_scores = cal_score(pred_logits, pred_ids, diff_cot, diff_logits)
 
     return pred_scores
 
@@ -244,13 +249,16 @@ def probe(case_index, layers):
         answers = msg['answer']
         if reg:
             steps = cots[idx]['answer']
-            pred_steps = steps[eval(pred)-1].split('.')[:-1]
-            label_steps = steps[eval(label)-1].split('.')[:-1]
+            pred_cot = steps[eval(pred)-1].split('.')[:-1]
+            pred_cot = '.'.join(pred_cot) 
+            label_cot = steps[eval(label)-1].split('.')[:-1]
+            label_cot = '.'.join(label_cot) 
         else:
             steps = answers.split('.')[:-2]
-            pred_steps = steps
-            label_steps = steps
+            pred_cot = '.'.join(steps) 
+            label_cot = '.'.join(steps) 
         if not steps:
+            print(f'Num {idx} question\'s cot is too short!!!')
             continue
         if dataset == 'gsm8k':
             label_option = str(label)
@@ -259,14 +267,15 @@ def probe(case_index, layers):
             options = question.split('\n')[-1].split('(')
             label_option = ' (' + options[eval(label)]
             pred_option = ' (' + options[eval(pred)]
-        # print(pred_steps)
-        pred_scores = cot_score(question, pred_option, pred_steps, layers, diff_cot, diff_logits)
-        label_scores = cot_score(question, label_option, label_steps, layers, diff_cot, diff_logits)
+
+        pred_scores = cot_score(question, pred_option, pred_cot, layers, direct, split, diff_cot, diff_logits)
+        label_scores = cot_score(question, label_option, label_cot, layers, direct, split, diff_cot, diff_logits)
+        
         pred_legends = [f'pred_step_{i+1}' for i in range(len(pred_scores))]
         label_legends = [f'label_step_{i+1}' for i in range(len(label_scores))]
         x_range = layers
-        # if diff_logits:
-        x_range = x_range[1:]
+        if diff_logits:
+            x_range = x_range[1:]
         if avg:
             pred_scores_ls.append(pred_scores)
             label_scores_ls.append(label_scores)
@@ -274,78 +283,39 @@ def probe(case_index, layers):
             fig_path = result_path + f'_{cot_data.index(msg)}.png'
             draw_plot(x_range, pred_scores+label_scores, pred_legends+label_legends, fig_path)
     if avg:
-        pred_scores = cot_avg(pred_scores_ls, avg)
-        label_scores = cot_avg(label_scores_ls, avg)
-        if avg == 'norm':
-            legends = []
-            for i in range(len(pred_scores)):
-                legends.append(f'pred_step_{i+1}')
-            for i in range(len(label_scores)):
-                legends.append(f'label_step_{i+1}')
-            fig_path = result_path + '_norm-avg.png'
-            draw_plot(x_range, pred_scores+label_scores, legends, fig_path)
-        elif avg == 'steps':
-            fold_path = result_path + '_steps-avg/'
-            if not os.path.exists(fold_path):
-                os.mkdir(fold_path)
-            for i in sorted(pred_scores.keys()):
-                pred_score = pred_scores[i]
-                label_score = label_scores[i]
-                pred_legend = [f'l{i}_pred_step_{x}' for x in range(1,i+1)]
-                label_legend = [f'l{i}_label_step_{x}' for x in range(1,i+1)]
-                fig_path = os.path.join(fold_path, f'l{i}.png')
-                draw_plot(x_range, pred_score+label_score, pred_legend+label_legend, fig_path)
+        if avg == 'heat':
+            pred_fig_path = result_path + '_heat-pred.png'
+            label_fig_path = result_path + '_heat-label.png'
+            pred_scores_ls = np.squeeze(np.array(pred_scores_ls)).tolist()
+            label_scores_ls = np.squeeze(np.array(label_scores_ls)).tolist()
+            draw_heat(layers, case_index, pred_scores_ls, pred_fig_path)
+            draw_heat(layers, case_index, label_scores_ls, label_fig_path)
+        else:
+            pred_scores = cot_avg(pred_scores_ls, avg)
+            label_scores = cot_avg(label_scores_ls, avg)
+            if avg == 'norm':
+                legends = []
+                for i in range(len(pred_scores)):
+                    legends.append(f'pred_step_{i+1}')
+                for i in range(len(label_scores)):
+                    legends.append(f'label_step_{i+1}')
+                fig_path = result_path + '_norm-avg.png'
+                draw_plot(x_range, pred_scores+label_scores, legends, fig_path)
+            elif avg == 'steps':
+                fold_path = result_path + '_steps-avg/'
+                if not os.path.exists(fold_path):
+                    os.mkdir(fold_path)
+                for i in sorted(pred_scores.keys()):
+                    pred_score = pred_scores[i]
+                    label_score = label_scores[i]
+                    pred_legend = [f'l{i}_pred_step_{x}' for x in range(1,i+1)]
+                    label_legend = [f'l{i}_label_step_{x}' for x in range(1,i+1)]
+                    fig_path = os.path.join(fold_path, f'l{i}.png')
+                    draw_plot(x_range, pred_score+label_score, pred_legend+label_legend, fig_path)
         
 
-# def probe(cot_mode, cot_case, mode, return_diff):
-#     with open(cot_file_path, 'r') as f:
-#         cot_data = json.load(f)[:-1]
-#     with open(base_file_path, 'r') as f:
-#         base_data = json.load(f)[:-1]
-#     cor_cot_data, wr_cot_data = collect_tf_data(cot_data)     
-#     cor_base_data, wr_base_data = collect_tf_data(base_data)        
-#     score_list = []
-#     legend_list = []
-#     for mode in cot_mode:
-#         for case in cot_case:
-#             if case == 'w2w':
-#                 data = merge_data(wr_cot_data, wr_base_data)
-#             elif case == 'w2c':
-#                 data = merge_data(cor_cot_data, wr_base_data)
-#             elif case == 'c2w':
-#                 data = merge_data(wr_cot_data, cor_base_data)
-#             else:
-#                 data = merge_data(cor_cot_data, cor_base_data) 
-#             data, labels = prepare_probe_data(data, mode)
-#             scores = cal_layer_score(dataloader=data, mode=mode, return_diff=return_diff)
-#             if mode == 'acc':
-#                 corrects = [0] * 40
-#                 for i in range(len(scores)):
-#                     label = labels[i]
-#                     score_ls = scores[i]
-#                     for j in range(len(score_ls)):
-#                         score = score_ls[j]
-#                         pred = str(np.argmax(score) + 1)
-#                         if pred == label:
-#                             corrects[j] += 1
-#                 accs = [correct / len(scores) for correct in corrects]
-#                 score_list.append(accs)
-#                 legend_list.append(f'{mode}_{case}')
-#             else:
-#                 scores = np.array(scores)
-#                 pred_scores = np.mean(scores[:,:,0], axis=0)
-#                 label_scores = np.mean(scores[:,:,1], axis=0)
-#                 score_list.append(pred_scores)
-#                 score_list.append(label_scores)
-#                 legend_list.append(f'pred_{mode}_{case}')
-#                 legend_list.append(f'label_{mode}_{case}')
-#     return score_list, legend_list
-
-case_index = merge_data(mode)[:50]
+case_index = merge_data(mode)[:cnt]
 print(case_index)
-if not case_index:
-    case_index = [10,11,13,15,16,27,28,40,47,49]
-case_index = case_index[:cnt]
 layers = [0, 5, 10, 15, 20, 25, 30, 35, 40]
 
-probe(case_index=case_index, layers=layers, load_cot=False)
+probe(case_index=case_index, layers=layers)

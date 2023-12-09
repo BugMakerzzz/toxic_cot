@@ -20,6 +20,8 @@ siqa_dev_label_path = './data/SocialIQA/dev-labels.lst'
 gsm8k_train_data_path = './data/grade-school-math/grade_school_math/data/train.jsonl'
 gsm8k_dev_data_path = './data/grade-school-math/grade_school_math/data/test.jsonl'
 
+strategy_data_path = './data/strategyqa_dataset/strategyqa_train_filtered.jsonl'
+
 
 class DataLoader():
     def __init__(self, dataset,  data_length, split='dev', shuffle=True) -> None:
@@ -69,6 +71,8 @@ class DataLoader():
                 datapath = gsm8k_train_data_path
             else:
                 datapath = gsm8k_dev_data_path
+        elif dataset == 'strategy':
+            datapath = strategy_data_path
         
         with open(datapath, 'r', encoding='utf-8') as f:
             for line in f:
@@ -83,6 +87,14 @@ class DataLoader():
                     for i in range(len(data['question']['choices'])):
                         tup = data['question']['choices'][i]
                         options.append(tup['text'])
+                elif dataset == 'strategy':
+                    question = data['question']
+                    label = data['answer']
+                    if label == "true":
+                        label = '1'
+                    else:
+                        label = '2' 
+                    options = ['yes', 'no']
                 elif dataset == 'wino':
                     question = data['sentence']
                     label = data['answer']
@@ -166,4 +178,4 @@ class DataLoader():
     
     def __len__(self):
         return self.__len
-    
+
