@@ -42,8 +42,8 @@ reg = args.reg
 direct = args.direct
 split = args.split
 model_path = f'./model/{model_name}'
-cot_file_path  = f'./result/{dataset}/{model_name}_cot_answer_dev_100.json'
-base_file_path = f'./result/{dataset}/{model_name}_direct_answer_dev_100.json'
+cot_file_path  = f'./result/{dataset}/{model_name}_cot_answer_dev_1000.json'
+base_file_path = f'./result/{dataset}/{model_name}_direct_answer_dev_1000.json'
 result_path = f'./result/{dataset}/fig/{model_name}_{mode}_{diff_logits}-dl_{diff_cot}-dc_{cnt}-cnt_{reg}-reg_{split}-split_{direct}-direct'
 full_cot_path = f'./result/{dataset}/{model_name}_cot_dev_1000.json'
 
@@ -121,7 +121,7 @@ def cal_logits(question_text, pred_text, layers, diff_logits):
     for layer in layers:
         logits = dict_outputs[layer][0, prefix_ids.shape[-1] - 1: -1, :]
         logits = logits.log_softmax(dim=-1)
-        if diff_logits and diff_logits != 'score':
+        if diff_logits and diff_logits != 'contrast':
             if layer == 0:
                 continue
             if diff_logits == 'base':
@@ -158,15 +158,14 @@ def cal_score(logits_ls, ids_ls, diff_cot, diff_logits):
         if diff_cot:
             logits = logits - base_logits
 
-        if diff_logits == 'score':
-            probs = logits[:,range(logits.shape[1]), ids].sum(axis=-1)
-            probs = (probs - probs[0])[1:].tolist()
-        else:
-            probs = logits[:,range(logits.shape[1]), ids].sum(axis=-1).tolist()
+        # if diff_logits == 'score':
+        #     probs = logits[:,range(logits.shape[1]), ids].sum(axis=-1)
+        #     probs = (probs - probs[0])[1:].tolist()
+        # else:
+        probs = logits[:,range(logits.shape[1]), ids].sum(axis=-1).tolist()
         
         scores.append(probs)
-
-    return scores 
+    return scores
 
 
 def cot_score(question, pred, cot, layers, direct=False, split=False, diff_cot=None, diff_logits=None):
@@ -184,8 +183,12 @@ def cot_score(question, pred, cot, layers, direct=False, split=False, diff_cot=N
                 if not direct:
                     continue
             else:
-                cot_question += cot[i-1] + '.'
-            logits, ids = cal_logits(cot_question+' So the answer is: ', pred, layers, diff_logits)
+                cot_question += cot[i-1] 
+            # print(target)
+            if i == len(cot) or i == 0:
+                logits, ids = cal_logits(cot_question + '\nSo the answer is: ', pred, layers, diff_logits)
+            else:
+                logits, ids = cal_logits(cot_question + '...\nSo the answer is: ', pred, layers, diff_logits)
             pred_logits.append(logits)
             pred_ids.append(ids)
         pred_scores = cal_score(pred_logits, pred_ids, diff_cot, diff_logits)
@@ -249,6 +252,8 @@ def probe(case_index, layers):
         answers = msg['answer']
         if reg:
             steps = cots[idx]['answer']
+            if eval(pred)-1 >= len(steps):
+                continue
             pred_cot = steps[eval(pred)-1].split('.')[:-1]
             pred_cot = '.'.join(pred_cot) 
             label_cot = steps[eval(label)-1].split('.')[:-1]
@@ -264,17 +269,25 @@ def probe(case_index, layers):
             label_option = str(label)
             pred_option = str(pred)
         else:
-            options = question.split('\n')[-1].split('(')
-            label_option = ' (' + options[eval(label)]
-            pred_option = ' (' + options[eval(pred)]
+            label_option = f'({label})'
+            pred_option = f'({pred})'
+            # options = question.split('\n')[-1].split('(')
+            # label_option = ' (' + options[eval(label)]
+            # pred_option = ' (' + options[eval(pred)]
+
 
         pred_scores = cot_score(question, pred_option, pred_cot, layers, direct, split, diff_cot, diff_logits)
         label_scores = cot_score(question, label_option, label_cot, layers, direct, split, diff_cot, diff_logits)
-        
+        if diff_logits == 'contrast':
+            pred_sub_scores = cot_score(question, label_option, pred_cot, layers, direct, split, diff_cot, diff_logits)
+            label_sub_scores = cot_score(question, pred_option, label_cot, layers, direct, split, diff_cot, diff_logits)
+            pred_scores = (np.array(pred_scores) - np.array(pred_sub_scores)).tolist()
+            label_scores = (np.array(label_scores) - np.array(label_sub_scores)).tolist()
+            
         pred_legends = [f'pred_step_{i+1}' for i in range(len(pred_scores))]
         label_legends = [f'label_step_{i+1}' for i in range(len(label_scores))]
         x_range = layers
-        if diff_logits:
+        if diff_logits and diff_logits != 'contrast':
             x_range = x_range[1:]
         if avg:
             pred_scores_ls.append(pred_scores)
@@ -286,10 +299,35 @@ def probe(case_index, layers):
         if avg == 'heat':
             pred_fig_path = result_path + '_heat-pred.png'
             label_fig_path = result_path + '_heat-label.png'
-            pred_scores_ls = np.squeeze(np.array(pred_scores_ls)).tolist()
-            label_scores_ls = np.squeeze(np.array(label_scores_ls)).tolist()
-            draw_heat(layers, case_index, pred_scores_ls, pred_fig_path)
-            draw_heat(layers, case_index, label_scores_ls, label_fig_path)
+            pred_first_scores = np.zeros(len(layers))
+            pred_mid_scores = np.zeros(len(layers))
+            pred_last_scores = np.zeros(len(layers))
+            label_first_scores = np.zeros(len(layers))
+            label_mid_scores = np.zeros(len(layers))
+            label_last_scores = np.zeros(len(layers))
+            for scores in pred_scores_ls:
+                steps = len(scores)
+                pred_first_scores += np.array(scores[0])
+                pred_last_scores += np.array(scores[-1])
+                if steps <= 2:
+                    pred_mid_scores += np.array([scores[0], scores[-1]]).mean(axis=0)
+                else:
+                    pred_mid_scores += np.array(scores[1:-1]).mean(axis=0)
+            for scores in label_scores_ls:
+                steps = len(scores)
+                label_first_scores += np.array(scores[0])
+                label_last_scores += np.array(scores[-1])
+                if steps <= 2:
+                    label_mid_scores += np.array([scores[0], scores[-1]]).mean(axis=0)
+                else:
+                    label_mid_scores += np.array(scores[1:-1]).mean(axis=0) 
+            pred_cnt = len(pred_scores_ls)
+            label_cnt = len(label_scores_ls)
+            pred_scores_ls = [(pred_first_scores).tolist(), (pred_mid_scores).tolist(), (pred_last_scores).tolist()]
+            label_scores_ls = [(label_first_scores).tolist(), (label_mid_scores).tolist(), (label_last_scores).tolist()]
+            index = ['First', 'Mid', 'Last']
+            draw_heat(x_range, index, pred_scores_ls, pred_fig_path)
+            draw_heat(x_range, index, label_scores_ls, label_fig_path)
         else:
             pred_scores = cot_avg(pred_scores_ls, avg)
             label_scores = cot_avg(label_scores_ls, avg)
@@ -316,6 +354,6 @@ def probe(case_index, layers):
 
 case_index = merge_data(mode)[:cnt]
 print(case_index)
-layers = [0, 5, 10, 15, 20, 25, 30, 35, 40]
+layers = range(0,41)
 
 probe(case_index=case_index, layers=layers)

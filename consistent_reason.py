@@ -8,7 +8,7 @@ from prompts.wrap_prompt import LlamaPrompter
 from load_data import DataLoader
 from accelerate import init_empty_weights, load_checkpoint_and_dispatch
 from transformers.generation.stopping_criteria import StoppingCriteria, StoppingCriteriaList
-from metrics import draw
+from metrics import draw_acc
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='Llama-2-13b-chat-hf')
@@ -22,9 +22,9 @@ dataset = args.dataset
 datalength = args.datalength
 
 model_path = f'./model/{model_name}'
-cot_file_path  = f'./result/{dataset}/{model_name}_cot_answer_dev_200.json'
-base_file_path = f'./result/{dataset}/{model_name}_direct_answer_dev_200.json'
-full_cot_path = f'./result/{dataset}/{model_name}_cot_dev_1000.json'
+cot_file_path  = f'./result/{dataset}/{model_name}_cot_answer_dev_1000.json'
+base_file_path = f'./result/{dataset}/{model_name}_direct_answer_dev_1000.json'
+full_cot_path = f'./result/{dataset}/{model_name}_cot_dev_200.json'
 # result_path = f'./result/{dataset}/{model_name}_direct_answer_dev_{datalength}.json'
 
 config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
@@ -102,8 +102,8 @@ def cal_diff_score(logits_ls, ids_ls, diff_cot):
         if diff_cot:
             logits = logits - base_logits
 
-        probs = logits[:,range(logits.shape[1]), ids].sum(axis=-1)
-        probs = (probs - probs[0])[1:].tolist()
+        probs = logits[:,range(logits.shape[1]), ids].sum(axis=-1).tolist()
+        # probs = (probs - probs[0])[1:].tolist()
         scores.append(probs)
 
     return scores[-1]
@@ -141,7 +141,7 @@ with open(full_cot_path, 'r') as f:
     cots = json.load(f)
 
  
-layers = [5, 10, 15, 20, 25, 30, 35, 40]
+layers = [0, 5, 10, 15, 20, 25, 30, 35, 40]
 corrects = [0] * len(layers)
 for i in tqdm(range(len(cot_data))):
     base_msg = base_data[i]
@@ -160,8 +160,10 @@ for i in tqdm(range(len(cot_data))):
         elif pred1 == 'None' or eval(pred1) > len(options):
             pred = [pred2] * len(layers)
         else:
-            pred1_option = f'({options[eval(pred1)]}' 
-            pred2_option = f'({options[eval(pred2)]}'
+            # pred1_option = f'({options[eval(pred1)]}' 
+            # pred2_option = f'({options[eval(pred2)]}'
+            pred1_option = f'({pred1})' 
+            pred2_option = f'({pred2})'
             
             # steps = answers.split('.')[:-2]
             # if len(steps) == 0:
@@ -193,4 +195,4 @@ for i in tqdm(range(len(cot_data))):
             
 results = [corrects[i] / datalength for i in range(len(corrects))]
 print(results)
-draw(layers, results, dataset, './test.png', 'acc')
+draw_acc(layers, results, 'acc', './test.png')

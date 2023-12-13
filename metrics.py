@@ -11,7 +11,7 @@ def draw_plot(layers, scores, labels, path):
     for i in range(len(scores)):
         score = scores[i]
         label = labels[i]
-        plt.plot(x_values, score, label=label, marker='o')
+        plt.plot(x_values, score, label=label, marker='.')
             
     # 设置图形标题和坐标轴标签
     plt.xlabel('Layers')
@@ -37,7 +37,17 @@ def draw_acc(layers, scores, label, path):
 
 def draw_heat(layers, index, scores, path):
     sns.set()
-    ax=sns.heatmap(scores, vmin=-10,vmax=20, cmap="RdBu_r", center=0, xticklabels=layers, yticklabels=index)
+    # if type == 'std':
+    #     vmin = 0
+    #     vmax = 10
+    #     center = 5
+    # elif type == 'mean':
+    #     vmin = -10
+    #     vmax = 10
+    #     center = 0
+    ax=sns.heatmap(scores, cmap="RdBu_r", center=0, xticklabels=layers, yticklabels=index)
+    # ax=sns.heatmap(scores, cmap="RdBu_r", xticklabels=layers, yticklabels=index)
+    plt.xticks(size = 4)
     plt.savefig(path)
     plt.close()
   
