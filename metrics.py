@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+import pandas as pd
 
 def draw_plot(layers, scores, labels, path):
     x_values = layers
@@ -21,7 +22,7 @@ def draw_plot(layers, scores, labels, path):
     # 添加图例
     plt.legend()
     plt.savefig(path)
-    
+    plt.close()
 
 def draw_acc(layers, scores, label, path):
     x_values = layers
@@ -52,7 +53,18 @@ def draw_heat(layers, index, scores, path):
     plt.close()
   
   
-    
+def draw_line_plot(x_range, scores, path):
+    x_values = []
+    y_values = []
+    for i in range(len(scores)):
+        score = scores[i]
+        x = [x_range[i]] * len(score)
+        x_values += x
+        y_values += score 
+    data_plot = pd.DataFrame({"index":x_values, "score":y_values})
+    sns.lineplot(x = "index", y = "score", data=data_plot, err_style='bars')
+    plt.savefig(path)
+    plt.close()
 # # def extrat_gsm8k(text):
 # #     text = text.s
 # #     der data process-for-prediction(self, text):text a text.split(' nin')leltext = text,split()::-1]flag m False
@@ -62,3 +74,11 @@ def draw_heat(layers, index, scores, path):
 # # if flag:break
 # # ret1 for i in range(lenret)):1f ret[11.1sdigit():retl +m ret(i]return retl  
 # results = [0.19, 0.18, 0.16, 0.13, 0.14, 0.21, 0.18, 0.2, 0.2]
+
+def draw_attr_heat(scores, x_tokens, y_tokens, path):
+    ax=sns.heatmap(scores, cmap="RdBu_r", center=0, xticklabels=x_tokens, yticklabels=y_tokens)
+    # ax=sns.heatmap(scores, cmap="RdBu_r", xticklabels=layers, yticklabels=index)
+    plt.xticks(size = 2)
+    plt.yticks(size = 2)
+    plt.savefig(path)
+    plt.close()

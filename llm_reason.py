@@ -174,7 +174,7 @@ model = load_checkpoint_and_dispatch(
 tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)  
 prompter = LlamaPrompter(dataset=dataset, task=task)
 dataloader = DataLoader(dataset=dataset, data_length=datalength, split=split)
-
+sent_model = SentenceTransformer('./model/all-mpnet-base-v2')
 class KeywordsStoppingCriteria(StoppingCriteria):
     def __init__(self, keywords_ids:list):
         self.keywords = keywords_ids

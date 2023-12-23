@@ -1,61 +1,272 @@
+# from sentence_transformers import SentenceTransformer
+# import numpy as np
+
+# cots = ["When you need to rest, it is often because you have been doing something that requires energy.",
+#         "You may have been doing physical activities, mental activities, or other things that consume your energy. "]
+# question = "When you need to rest it's often because you have been doing what? using energy"
+# model = SentenceTransformer('./model/all-mpnet-base-v2')
+# cot_embeddings = model.encode(cots)
+# question_embedding = model.encode(question)
+# for embedding in cot_embeddings:
+#     print(np.dot(embedding, question_embedding))
+
+# import os
+# import torch
+# import re
+# import argparse
+# import json
+# import numpy as np
+# from tqdm import tqdm
+# from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, AutoModelForSeq2SeqLM
+# from prompts.wrap_prompt import LlamaPrompter
+# from load_data import DataLoader
+# from accelerate import init_empty_weights, load_checkpoint_and_dispatch
+# from transformers.generation.stopping_criteria import StoppingCriteria, StoppingCriteriaList
+
+
+# parser = argparse.ArgumentParser()
+# parser.add_argument('--model', type=str, default='Llama-2-13b-chat-hf')
+# parser.add_argument('--datalength', type=int, default=2)
+# parser.add_argument('--split', type=str, default='dev')
+# parser.add_argument('--dataset', type=str, default='siqa')
+# parser.add_argument('--task', type=str, default='direct_answer')
+# parser.add_argument('--shuffle', type=str, default=False)
+# args = parser.parse_args()
+
+
+# model_name = args.model
+# dataset = args.dataset
+# datalength = args.datalength
+# split = args.split
+# task = args.task
+# shuffle = args.shuffle
+# model_path = f'./model/{model_name}'
+# result_path = f'./result/{dataset}/{model_name}_{task}_{split}_{datalength}_{shuffle}.json'
+
+# config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
+# with init_empty_weights():
+#     model = AutoModelForCausalLM.from_config(config, torch_dtype=torch.float16, trust_remote_code=True)
+#     # model = AutoModelForSeq2SeqLM.from_config(config, torch_dtype=torch.float16, trust_remote_code=True)
+# no_split_modules = model._no_split_modules
+# model = load_checkpoint_and_dispatch(
+#     model, model_path, device_map="auto", no_split_module_classes=no_split_modules
+# )
+# tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)  
+# prompter = LlamaPrompter(dataset=dataset, task=task)
+# dataloader = DataLoader(dataset=dataset, data_length=datalength, split=split, shuffle=shuffle)
+
+# class KeywordsStoppingCriteria(StoppingCriteria):
+#     def __init__(self, keywords_ids:list):
+#         self.keywords = keywords_ids
+
+#     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
+#         if input_ids[0][-1] in self.keywords:
+#             return True
+#         return False
+
+# stop_words = ['</s>', '<s>', '</s><s>']
+# stop_ids = [tokenizer.encode(w)[0] for w in stop_words]
+# stop_criteria = KeywordsStoppingCriteria(stop_ids)
+
+# def score_generate(input, 
+#                    layers=[1,5,10,15,20,25,30,35,40], 
+#                    return_dict_in_generate=True,
+#                    max_new_tokens=500,
+#                    stopping_criteria=[stop_criteria]):
+#     question_ids = tokenizer(input, return_tensors="pt").input_ids.to(model.device)
+#     dict_outputs = []
+#     output = model.generate(
+#             input_ids=question_ids,
+#             return_dict_in_generate=return_dict_in_generate,
+#             max_new_tokens=max_new_tokens,
+#             stopping_criteria=stopping_criteria,
+#             # early_exit_layers=layers,
+#             # split_token_ids=29889,
+#         )
+#     reg_logits = []
+#     for dict_output in dict_outputs:
+#         dict_logits = []
+#         for layer in layers:
+#             logits = dict_output[layer][0, -1, :]
+#             dict_logits.append(logits.log_softmax(dim=-1).tolist())
+#         dict_logits = np.array(dict_logits)
+#         del dict_output[layer]
+#         reg_logits.append(dict_logits)
+#     options = input.split('\n')[-1].split('(')[1:]
+#     option_scores = []
+#     for option in options:
+#         scores = []
+#         full_text = input + ' So the answer is: (' + option.split(')')[0] + ')'
+#         full_ids = tokenizer(full_text, return_tensors="pt").input_ids
+#         answer_ids = full_ids[0, question_ids.shape[-1]:]
+#         for dict_logits in reg_logits:
+#             probs = dict_logits[:, answer_ids].sum(axis=-1).tolist()
+#             scores.append(probs)
+#         option_scores.append(scores)    
+#     result = tokenizer.decode(output.sequences[0]).split(' [/INST] ')[-1]
+#     pred = result.split(':')[-1]
+#     match = re.findall(r'[1-5]\)',pred)
+#     if match:
+#         pred = match[-1][:-1]
+#     else:
+#         pred = 'None'
+#     del question_ids
+#     del output
+#     torch.cuda.empty_cache()
+#     return option_scores, result, pred
+
+
+# correct = 0
+# results = []
+# for data in tqdm(dataloader):
+#     question = data['question']
+#     input = prompter.wrap_input(question, icl_cnt=5)
+#     label = data['label']
+#     torch.set_grad_enabled(False)
+#     model.eval()
+#     # inputs = tokenizer(input, return_tensors="pt")
+#     scores, result, pred = score_generate(input)
+#     cor_flag = (pred == label)
+#     if cor_flag:
+#         correct += 1
+#     msg = {'question':question, 'answer':result, 'pred':pred, 'label':label, 'cor_flag':cor_flag, 'scores':scores}
+#     results.append(msg)
+    
+# results.append({'acc':correct/datalength})
+# print(f'Acc:{correct/datalength}')
+# with open(result_path, 'w', encoding='utf-8') as f:
+#     json.dump(results, f, indent=4)
+
+### 以上为加了生成CoT过程中打分的版本
+
+import os
 import torch
-import transformers
-data = [
-    {
-        "question": "Needing a boost Emily asked Rachel to put them on their shoulders in order to reach the roof, _  is tall in height.\n(1) Emily (2) Rachel ",
-        "answer": "  A person who is tall in height can reach the roof easily. Since Emily needed a boost to reach the roof, Emily is not tall in height. \nSo the answer is: (1) Emily.</s>",
-        "label": "2"
-    },
-    {
-        "question": "The computer of Victoria ran slower than that of Carrie because _ downloaded less files.\n(1) Victoria (2) Carrie ",
-        "answer": "  A computer runs slowly when it has too many files. A person who downloads less files may have a faster computer. Since Victoria's computer ran slower than Carrie's, Victoria downloaded less files. \nSo the answer is: (1) Victoria.</s>",
-        "label": "2"
-    },
-    {
-        "question": "The TV that Samantha bought costs more than that of Carrie, because _ was poor.\n(1) Samantha (2) Carrie ",
-        "answer": "  A person who is poor may not afford to buy an expensive thing. A person who can afford to buy an expensive thing may be rich. Since Samantha's TV costs more than Carrie's, Samantha may be rich. \nSo the answer is: (1) Samantha.</s>",
-        "label": "2"
-    },
-    
-    
-]
+import re
+import argparse
+import json
+from tqdm import tqdm
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, AutoModelForSeq2SeqLM
+from prompts.wrap_prompt import LlamaPrompter
+from load_data import DataLoader
+from accelerate import init_empty_weights, load_checkpoint_and_dispatch
+from transformers.generation.stopping_criteria import StoppingCriteria, StoppingCriteriaList
 
 
-def llm_score(self, input_text1, input_text2, pmi=False, max_new_tokens=256, top_p=0.95, top_k=0, temperature=0.8, mature_layer=None, premature_layer=None, candidate_premature_layers=[], mode='baseline', verbose=True, remove_stop_words=False, relative_top=0.1, relative_top_value=-1000.0, post_softmax=True, **kwargs):
-    with torch.no_grad():
-        input_text = input_text1 + input_text2
-        input_ids = self.tokenizer(input_text, return_tensors="pt").input_ids.to(self.device)
-        prefix_ids = self.tokenizer(input_text1, return_tensors="pt").input_ids.to(self.device)
-        continue_ids = input_ids[0, prefix_ids.shape[-1]:]
-        if mode == 'baseline':
-            outputs = self.model(input_ids)[0].squeeze(0)
-            outputs = outputs.log_softmax(-1)  # logits to log probs
+parser = argparse.ArgumentParser()
+parser.add_argument('--model', type=str, default='Llama-2-13b-chat-hf')
+parser.add_argument('--datalength', type=int, default=2)
+parser.add_argument('--split', type=str, default='dev')
+parser.add_argument('--dataset', type=str, default='siqa')
+parser.add_argument('--task', type=str, default='direct_answer')
+parser.add_argument('--icl', type=int, default=5)
+parser.add_argument('--search', type=str, default='greedy')
+args = parser.parse_args()
 
-            # skip tokens in the prompt -- we only care about the answer
-            outputs = outputs[prefix_ids.shape[-1] - 1: -1, :]
 
-            # get logprobs for each token in the answer
-            log_probs = outputs[range(outputs.shape[0]), continue_ids].sum().item()
-            
-        elif mode == 'dola-static':
-            dict_outputs, outputs = self.model(
+model_name = args.model
+dataset = args.dataset
+datalength = args.datalength
+split = args.split
+task = args.task
+icl = args.icl
+search = args.search
+model_path = f'./model/{model_name}'
+result_path = f'./result/{dataset}/{model_name}_{task}_{split}_{datalength}.json'
+if search == 'beam':
+    result_path = f'./result/{dataset}/{model_name}_{task}_{split}_{datalength}_beam.json'
+
+config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
+with init_empty_weights():
+    model = AutoModelForCausalLM.from_config(config, torch_dtype=torch.float16, trust_remote_code=True)
+    # model = AutoModelForSeq2SeqLM.from_config(config, torch_dtype=torch.float16, trust_remote_code=True)
+no_split_modules = model._no_split_modules
+model = load_checkpoint_and_dispatch(
+    model, model_path, device_map="auto", no_split_module_classes=no_split_modules
+)
+tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)  
+prompter = LlamaPrompter(dataset=dataset, task=task)
+dataloader = DataLoader(dataset=dataset, data_length=datalength, split=split)
+sent_model = SentenceTransformer('./model/all-mpnet-base-v2')
+class KeywordsStoppingCriteria(StoppingCriteria):
+    def __init__(self, keywords_ids:list):
+        self.keywords = keywords_ids
+
+    def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
+        if input_ids[0][-1] in self.keywords:
+            return True
+        return False
+
+stop_words = ['</s>', '<s>', '</s><s>']
+stop_ids = [tokenizer.encode(w)[0] for w in stop_words]
+stop_criteria = KeywordsStoppingCriteria(stop_ids)
+
+correct = 0
+results = []
+for data in tqdm(dataloader):
+    question = data['question']
+    input = prompter.wrap_input(question, icl_cnt=icl)
+    label = data['label']
+    torch.set_grad_enabled(False)
+    model.eval()
+    inputs = tokenizer(input, return_tensors="pt")
+    input_ids = inputs["input_ids"].to(model.device)
+    if search == 'greedy':
+        output = model.generate(
                 input_ids=input_ids,
-                return_dict=True,
-                output_attentions=False,
-                output_hidden_states=False,
-                early_exit_layers=[premature_layer, mature_layer],
+                return_dict_in_generate=True,
+                output_scores=True,
+                max_new_tokens=500,
+                stopping_criteria=[stop_criteria],
             )
-
-            assert premature_layer is not None
-            base_logits = dict_outputs[premature_layer][0, prefix_ids.shape[-1] - 1: -1, :]
-            final_logits = dict_outputs[mature_layer][0, prefix_ids.shape[-1] - 1: -1, :]
-            final_logits = final_logits.log_softmax(dim=-1)
-            base_logits = base_logits.log_softmax(dim=-1)
-            diff_logits = final_logits - base_logits
-            if post_softmax:
-                diff_logits = diff_logits.log_softmax(dim=-1)
-            if relative_top > 0.0:
-                relative_top_mask = self.get_relative_top_filter(final_logits, relative_top)
-                diff_logits = torch.where(relative_top_mask, relative_top_value, diff_logits)
-                
-            log_probs = diff_logits[range(diff_logits.shape[0]), continue_ids].sum().item()
+        result = tokenizer.decode(output.sequences[0]).split(' [/INST] ')[-1]
+        pred = result.split(':')[-1]
+    elif search == 'beam':
+        output = model.generate(
+                input_ids=input_ids,
+                return_dict_in_generate=True,
+                output_scores=True,
+                max_new_tokens=500,
+                num_beams=5,
+                # diversity_penalty=1.0,
+                do_sample=True,
+                temperature=1.3,
+                # num_beam_groups=3,
+                top_k=7,
+                top_p=0.9,
+                num_return_sequences=3,
+                stopping_criteria=[stop_criteria],
+            )
+        result_ls = []
+        preds = []
+        for i in range(3):
+            result = tokenizer.decode(output.sequences[i]).split(' [/INST] ')[-1]
+            pred = result.split(':')[-1].strip()
+            preds.append(pred)
+            result_ls.append(result)
+        pred = max(preds,key=preds.count)
+        result = result_ls
+    if dataset == 'gsm8k':
+        match = re.findall(r'[+-]?\d+',pred)
+        if match:
+            pred = int(match[0])
+        else:
+            pred = 0
+    else:
+        match = re.findall(r'[1-5]\)',pred)
+        if match:
+            pred = match[-1][:-1]
+        else:
+            pred = 'None'
+    cor_flag = (pred == label)
+    if cor_flag:
+        correct += 1
+    msg = {'question':question, 'answer':result, 'pred':pred, 'label':label, 'cor_flag':cor_flag}
+    results.append(msg)
+    del input_ids
+    del output
+    torch.cuda.empty_cache()
+    
+results.append({'acc':correct/datalength})
+print(f'Acc:{correct/datalength}')
+with open(result_path, 'w', encoding='utf-8') as f:
+    json.dump(results, f, indent=4)

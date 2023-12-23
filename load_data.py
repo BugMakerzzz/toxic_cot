@@ -2,25 +2,7 @@ import json
 import random
 import re
 random.seed(17)
-
-csqa_train_data_path = './data/CommonsenseQA/train_rand_split.jsonl'
-csqa_dev_data_path = './data/CommonsenseQA/dev_rand_split.jsonl'
-
-wino_train_data_path = './data/winogrande_1.1/train_l.jsonl'
-wino_dev_data_path = './data/winogrande_1.1/dev.jsonl'
-
-hella_train_data_path = './data/hellaswag/hellaswag_train.jsonl'
-hella_dev_data_path = './data/hellaswag/hellaswag_val.jsonl'
-
-siqa_train_data_path = './data/SocialIQA/train.jsonl'
-siqa_train_label_path = './data/SocialIQA/train-labels.lst'
-siqa_dev_data_path = './data/SocialIQA/dev.jsonl'
-siqa_dev_label_path = './data/SocialIQA/dev-labels.lst'
-
-gsm8k_train_data_path = './data/grade-school-math/grade_school_math/data/train.jsonl'
-gsm8k_dev_data_path = './data/grade-school-math/grade_school_math/data/test.jsonl'
-
-strategy_data_path = './data/strategyqa_dataset/strategyqa_train_filtered.jsonl'
+from config import *
 
 
 class DataLoader():
@@ -179,3 +161,77 @@ class DataLoader():
     def __len__(self):
         return self.__len
 
+
+class CoTLoader():
+    def __init__(self) -> None:
+        return 
+    
+    def __collect_tf_data(self, dataloader):
+        cor_data = []
+        wr_data = []
+        for data in dataloader:
+            if data['pred'] == 'None':
+                continue
+            if data['cor_flag']:
+                cor_data.append(data)
+            else:
+                wr_data.append(data)
+        return cor_data, wr_data
+    
+    
+    def split_cot(self, cot):
+        steps = cot.split('.')[:-1]
+        cots = []
+        for step in steps:
+            if 'answer is' in step:
+                continue
+            cots.append(step)
+        return cots
+    
+    def load_data(self, cot_file, base_file, mode, cnt, index=None):
+        with open(cot_file, 'r') as f:
+            full_cot_data = json.load(f)[:-1]
+        cot_cor_data, cot_wr_data = self.__collect_tf_data(full_cot_data)
+        with open(base_file, 'r') as f:
+            full_base_data = json.load(f)[:-1]
+        base_cor_data, base_wr_data = self.__collect_tf_data(full_base_data)
+        if not index:
+            if mode == 'W2C':
+                base_data = base_wr_data
+                cot_data = cot_cor_data
+            elif mode  == 'C2W':
+                base_data = base_cor_data
+                cot_data = cot_wr_data  
+            elif mode  == 'W2W':
+                base_data = base_wr_data
+                cot_data = cot_wr_data  
+            elif mode  == 'C2C':
+                base_data = base_cor_data
+                cot_data = cot_cor_data
+            else:
+                return  
+            index = []
+            question_set = []
+            for data in base_data:
+                question_set.append(data['question'])
+            for data in cot_data:
+                if data['question'] in question_set:
+                    index.append(full_cot_data.index(data))
+            index = index[:cnt]
+        data = []
+        for idx in index:
+            question = full_cot_data[idx]['question']
+            cot = full_cot_data[idx]['answer']
+            cots = self.split_cot(cot)
+            if mode == 'C2W':
+                pred = full_cot_data[idx]['pred']
+            else:
+                pred = full_base_data[idx]['pred']
+            label = full_cot_data[idx]['label']
+            msg = {'question':question, 'answer':cot, 'steps':cots, 'pred':pred, 'label':label}
+            data.append(msg)
+        cache_js = data + [{'index':index}]
+        cache_file_path = f'./data/cache_{mode}_{cnt}.json'
+        with open(cache_file_path,'w') as f:
+            json.dump(cache_js, f, indent=4)          
+        return data, index
