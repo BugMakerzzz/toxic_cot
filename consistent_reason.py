@@ -5,7 +5,7 @@ import numpy as np
 from tqdm import tqdm
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, AutoModelForSeq2SeqLM
 from prompts.wrap_prompt import LlamaPrompter
-from load_data import DataLoader
+from load_data import DataLoader, CoTLoader
 from accelerate import init_empty_weights, load_checkpoint_and_dispatch
 from transformers.generation.stopping_criteria import StoppingCriteria, StoppingCriteriaList
 from metrics import draw_acc
@@ -24,7 +24,7 @@ datalength = args.datalength
 model_path = f'./model/{model_name}'
 cot_file_path  = f'./result/{dataset}/{model_name}_cot_answer_dev_1000.json'
 base_file_path = f'./result/{dataset}/{model_name}_direct_answer_dev_1000.json'
-full_cot_path = f'./result/{dataset}/{model_name}_cot_dev_200.json'
+full_cot_path = f'./result/{dataset}/{model_name}_cot_dev_1000.json'
 # result_path = f'./result/{dataset}/{model_name}_direct_answer_dev_{datalength}.json'
 
 config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
@@ -109,7 +109,7 @@ def cal_diff_score(logits_ls, ids_ls, diff_cot):
     return scores[-1]
 
 
-def cot_score(question, pred, cot, layers=[0, 5, 10, 15, 20, 25, 30, 35, 40], diff_cot=None, diff_logits=None):
+def cot_score(question, pred, cot, layers, diff_cot=None, diff_logits=None):
     with torch.no_grad():
         pred_ids = []
         pred_logits = []
@@ -120,13 +120,14 @@ def cot_score(question, pred, cot, layers=[0, 5, 10, 15, 20, 25, 30, 35, 40], di
     
             # else:
             #     cot_question += cot[i-1] + '.'
-        logits, ids = lm_logit(cot_question+' So the answer is: ', pred, layers, diff_logits)
+        logits, ids = lm_logit(cot_question+'. So the answer is: ', pred, layers, diff_logits)
         pred_logits.append(logits)
         pred_ids.append(ids)
         pred_scores = cal_diff_score(pred_logits, pred_ids, diff_cot)
 
     return pred_scores
 
+dataloader = CoTLoader()
 
 prompter = LlamaPrompter(dataset=dataset, task='cot_answer')
 correct = 0
@@ -140,8 +141,8 @@ with open(base_file_path, 'r') as f:
 with open(full_cot_path, 'r') as f:
     cots = json.load(f)
 
- 
-layers = [0, 5, 10, 15, 20, 25, 30, 35, 40]
+layers = range(41)
+# layers = [0, 5, 10, 15, 20, 25, 30, 35, 40]
 corrects = [0] * len(layers)
 for i in tqdm(range(len(cot_data))):
     base_msg = base_data[i]
@@ -152,40 +153,72 @@ for i in tqdm(range(len(cot_data))):
     if msg['cor_flag'] == base_msg['cor_flag']:
         pred = [msg['pred']] * len(layers)
     else:
-        options = question.split('\n')[-1].split('(')
-        pred1 = base_msg['pred']
-        pred2 = msg['pred']
-        if pred2 == 'None' or eval(pred2) > len(options):
-            pred = [pred1] * len(layers)
-        elif pred1 == 'None' or eval(pred1) > len(options):
-            pred = [pred2] * len(layers)
-        else:
-            # pred1_option = f'({options[eval(pred1)]}' 
-            # pred2_option = f'({options[eval(pred2)]}'
-            pred1_option = f'({pred1})' 
-            pred2_option = f'({pred2})'
+        options = question.split('\n')[-1].split('(')[1:]
+        steps = cots[i]['answer']
+        reg_cots = []
+        for step in steps:
+            reg_steps = dataloader.split_cot(step)
+            reg_cot = '.'.join(reg_steps) 
+            reg_cot = reg_cot.replace(' Reason: ',"")
+            reg_cots.append(reg_cot)
+        scores = []
+        for i in range(len(options)):
+            score = []
+            pred = f'({i+1})'
+            for cot in reg_cots:
+                score.append(cot_score(question, pred, cot, layers))
+            score = np.array(score)
+            score = score.sum(axis=0)
+            scores.append(score)
             
-            # steps = answers.split('.')[:-2]
-            # if len(steps) == 0:
-            #     pred = pred1
-            # pred1_steps = pred2_steps = steps
-            steps = cots[i]['answer']
-            pred1_steps = steps[eval(pred1)-1]
-            pred2_steps = steps[eval(pred2)-1]
-            # pred1_cot = '.'.join(pred1_steps)
-            # pred2_cot = '.'.join(pred2_steps)
-            # else:        
-            pred1_score = cot_score(question, pred1_option, pred1_steps)
-            pred2_score = cot_score(question, pred2_option, pred2_steps)
-            pred = []
-            for i in range(len(pred1_score)):
-                score1 = pred1_score[i]
-                score2 = pred2_score[i]
-                if score1 > score2:
-                    pred.append(pred1)
-                else:
-                    pred.append(pred2)
-    # print(pred)
+        # pred1_steps = steps[eval(pred1)-1]
+        # pred2_steps = steps[eval(pred2)-1]
+        # pred1_cot = '.'.join(pred1_steps)
+        # pred2_cot = '.'.join(pred2_steps)
+        # else:        
+        # pred1_score = cot_score(question, pred1_option, pred1_steps)
+        # pred2_score = cot_score(question, pred2_option, pred2_steps)
+        scores = np.array(scores)
+        pred = np.argmax(scores, axis=0).tolist()
+        pred = [str(i+1) for i in pred]
+        # if msg['cor_flag'] == base_msg['cor_flag']:
+        #     pred = [msg['pred']] * len(layers)
+        # else:
+        #     options = question.split('\n')[-1].split('(')
+        #     pred1 = base_msg['pred']
+        #     pred2 = msg['pred']
+        #     if pred2 == 'None' or eval(pred2) > len(options):
+        #         pred = [pred1] * len(layers)
+        #     elif pred1 == 'None' or eval(pred1) > len(options):
+        #         pred = [pred2] * len(layers)
+        #     else:
+                
+        #         # pred1_option = f'({options[eval(pred1)]}' 
+        #         # pred2_option = f'({options[eval(pred2)]}'
+        #         pred1_option = f'({pred1})' 
+        #         pred2_option = f'({pred2})'
+                
+        #         # steps = answers.split('.')[:-2]
+        #         # if len(steps) == 0:
+        #         #     pred = pred1
+        #         # pred1_steps = pred2_steps = steps
+        #         steps = cots[i]['answer']
+        #         pred1_steps = steps[eval(pred1)-1]
+        #         pred2_steps = steps[eval(pred2)-1]
+        #         # pred1_cot = '.'.join(pred1_steps)
+        #         # pred2_cot = '.'.join(pred2_steps)
+        #         # else:        
+        #         pred1_score = cot_score(question, pred1_option, pred1_steps)
+        #         pred2_score = cot_score(question, pred2_option, pred2_steps)
+        #         pred = []
+        #         for i in range(len(pred1_score)):
+        #             score1 = pred1_score[i]
+        #             score2 = pred2_score[i]
+        #             if score1 > score2:
+        #                 pred.append(pred1)
+        #             else:
+        #                 pred.append(pred2)
+    print(pred)
     for i in range(len(pred)):
         if pred[i] == label:
             corrects[i] += 1
@@ -195,4 +228,4 @@ for i in tqdm(range(len(cot_data))):
             
 results = [corrects[i] / datalength for i in range(len(corrects))]
 print(results)
-draw_acc(layers, results, 'acc', './test.png')
+draw_acc(layers, results, 'acc', f'./test_{dataset}_{datalength}.png')

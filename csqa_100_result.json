@@ -1,0 +1,905 @@
+[
+    {
+        "question": "Where could you find hundreds of thousands of home?\n(1) field (2) neighborhood (3) star can (4) city or town (5) apartment building ",
+        "answer": [
+            " Hundreds of thousands of homes are usually found in cities or towns. So the answer is: (4) city or town.  </s>"
+        ],
+        "pred": "4",
+        "label": "4",
+        "cor_flag": true
+    },
+    {
+        "question": "Most people who are family like to greet each other with a what?\n(1) apartments (2) listen to music (3) have friends (4) know what ophiolites (5) hug ",
+        "answer": [
+            " People who are family usually greet each other with a hug. So the answer is: (5) hug.  </s>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "This is an unavoidable physiological consequence of running.  What is it?\n(1) breathlessness (2) increased heart rate (3) falling down (4) muscle bulk (5) calluses ",
+        "answer": [
+            " Running is a cardiovascular exercise that makes the heart pump harder and faster to supply oxygen and nutrients to the muscles. This is an unavoidable physiological consequence of running. So the answer is: (2) increased heart rate.  </s>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "question": "Where would you put nails if they are already packaged?\n(1) pocket (2) container (3) cabinet (4) jar (5) store ",
+        "answer": [
+            " If the nails are already packaged, the most likely place to put them would be in a container. So the answer is: (2) container. </s>"
+        ],
+        "pred": "2",
+        "label": "3",
+        "cor_flag": false
+    },
+    {
+        "question": "Animals who have hair and don't lay eggs are what?\n(1) reproduce asexually (2) males (3) mammals (4) attack (5) ocean ",
+        "answer": [
+            " Animals who have hair and don't lay eggs are mammals. So the answer is: (3) mammals. </s>"
+        ],
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "What is the least likely immediate side effect of eating hamburger?\n(1) nausea (2) death (3) illness (4) health problems (5) gain weight ",
+        "answer": [
+            " Death is the least likely immediate side effect of eating a hamburger. While eating a hamburger may lead to long-term health problems, such as obesity or heart disease, it is not likely to cause immediate death. So the answer is: (2) death. </s>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "question": "John was a bit think in the head, but he knew that he never saw the lady before.  They were what?\n(1) pay debts (2) slender (3) unacquainted (4) free flowing (5) sparse ",
+        "answer": [
+            " If John is a bit thick in the head, it means that he is a bit slow or foolish. So the answer is: (3) unacquainted, because he never saw the lady before. </s>"
+        ],
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "Where would you find a toy soldier that is being played with?\n(1) toy box (2) movies (3) child's hand (4) toybos (5) child park ",
+        "answer": [
+            " Toy soldiers are usually played with by children. So the answer is: (3) child's hand. </s>"
+        ],
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "The family finished dinner, the child's chore was to load the dirty dishes where?\n(1) restaurant kitchen (2) dishwasher (3) son's room (4) cabinet (5) party ",
+        "answer": [
+            " After dinner, the child's chore is to load the dirty dishes into the dishwasher. So the answer is: (2) dishwasher. </s>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "question": "The man took paperwork to other people to consult over it, where was he heading?\n(1) desk (2) meeting (3) office (4) table (5) work ",
+        "answer": [
+            " The man took paperwork to other people to consult over it, which means he was heading to a meeting. So the answer is: (2) meeting.  </s>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "question": "Where can fisherman store their rods when on a fishing trip?\n(1) hardware store (2) engine (3) fishing camp (4) lake (5) sporting goods store ",
+        "answer": [
+            " Fishermen can store their rods in a fishing camp. So the answer is: (3) fishing camp.  </s>"
+        ],
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "Sean was leaving work and took the roadway that led to his what?\n(1) neighborhood (2) city (3) fate (4) countryside (5) maps ",
+        "answer": [
+            " If Sean is leaving work, he may be heading to his home. So the answer is: (1) neighborhood. </s>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true
+    },
+    {
+        "question": "The teacher thought that a ferret can be very mischievous and probably wouldn't make a great pet for the entire what?\n(1) bad mood (2) hutch (3) classroom (4) pair of trousers (5) year ",
+        "answer": [
+            " Ferrets are known to be mischievous and energetic animals. They may not be a good pet for someone who is in a bad mood, as they require a lot of attention and care. So the answer is: (1) bad mood. </s>"
+        ],
+        "pred": "1",
+        "label": "3",
+        "cor_flag": false
+    },
+    {
+        "question": "What has a shelf that does not allow you to see what is inside of it?\n(1) chest of drawers (2) stove (3) hold alcohol (4) bookcase (5) grocery store ",
+        "answer": [
+            " A bookcase has shelves that hold books and other items, but the shelves are usually made of wood or other materials that block the view of what is inside the bookcase. So the answer is: (4) bookcase. </s>"
+        ],
+        "pred": "4",
+        "label": "1",
+        "cor_flag": false
+    },
+    {
+        "question": "Where is a statute found on a platform?\n(1) below (2) arena (3) concert hall (4) museum (5) building ",
+        "answer": [
+            " A statute is a sculpture or a statue. It is usually found in a public place like a park or a square. So the answer is: (5) building. </s><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk>"
+        ],
+        "pred": "5",
+        "label": "4",
+        "cor_flag": false
+    },
+    {
+        "question": "Why would a person like to have a large house?\n(1) have choice (2) mentally challenged (3) own house (4) obesity (5) lots of space ",
+        "answer": [
+            " People usually want to have a large house because they want to have lots of space. So the answer is: (5) lots of space. </s>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "Where might someone store a reusable shopping bag?\n(1) supermarket (2) home (3) mart (4) obesity (5) closet ",
+        "answer": [
+            " Reusable shopping bags are usually stored in the home. So the answer is: (2) home.</s><unk>"
+        ],
+        "pred": "2",
+        "label": "5",
+        "cor_flag": false
+    },
+    {
+        "question": "Where does lettuce arrive by large trucks?\n(1) kitchen (2) supermarket (3) farmer's market (4) salad (5) refrigerator ",
+        "answer": [
+            " Lettuce is usually grown in farms, and then transported to supermarkets by large trucks. So the answer is: (2) supermarket.</s><unk>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "question": "The chief saw his entire tribe wiped out, he was a leader with a single what?\n(1) peon (2) indian (3) minister (4) follower (5) employee ",
+        "answer": [
+            " If the chief saw his entire tribe wiped out, he may be the last survivor of the tribe. So the answer is: (1) peon. </s>"
+        ],
+        "pred": "1",
+        "label": "4",
+        "cor_flag": false
+    },
+    {
+        "question": "What could a driving car do to a pedestrian?\n(1) say hello (2) wreak (3) pollution (4) smoke (5) relaxation ",
+        "answer": [
+            " A car can wreak havoc on a pedestrian. So the answer is: (2) wreak.</s><unk>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "question": "Why do people read non fiction?\n(1) having fun (2) it's more relatable (3) learn new things (4) becoming absorbed (5) falling asleep ",
+        "answer": [
+            " People read non-fiction to learn new things. Non-fiction books provide information and knowledge on various topics, such as history, science, self-help, and more. People read non-fiction to gain a better understanding of the world around them, to improve their skills and knowledge, and to expand their perspectives. So the answer is: (3) learn new things. </s>"
+        ],
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "Is that person acting as silly as a clown?\n(1) make mistakes (2) ridiculous (3) have no home (4) mentally unhinged (5) schizophrenia ",
+        "answer": [
+            " The word \"silly\" means acting in a foolish or absurd manner. So the answer is: (2) ridiculous. </s><unk>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "question": "Where outside of a city would a squirrel live?\n(1) roof (2) inside home (3) forest (4) yard (5) park ",
+        "answer": [
+            " Squirrels usually live in the forest. So the answer is: (3) forest. </s>"
+        ],
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "The man in the white suit was very lazy.  He did nothing useful.  Meanwhile, the ban in the blue had put in effort and was very what?\n(1) restless (2) active (3) lazybutt (4) productive (5) hard work ",
+        "answer": [
+            " The word \"lazy\" is already in the description of the man in the white suit, so the word that best fits the description of the man in the blue is: (4) productive. </s>"
+        ],
+        "pred": "4",
+        "label": "4",
+        "cor_flag": true
+    },
+    {
+        "question": "Steve thought that it was possible, but he agreed that it was what?\n(1) no go (2) unable (3) unlikely (4) impossibility (5) cant do ",
+        "answer": [
+            " If Steve thought that it was possible but agreed that it was unlikely, then he agreed that it was impossible. So the answer is: (4) impossibility. </s>"
+        ],
+        "pred": "4",
+        "label": "3",
+        "cor_flag": false
+    },
+    {
+        "question": "Traveling from new place to new place is likely to be what?\n(1) going somewhere (2) exhilarating (3) diarrhea (4) relocation (5) exhausting ",
+        "answer": [
+            " Traveling from new place to new place is likely to be exhausting. Traveling can be physically and mentally tiring. So the answer is: (5) exhausting.</s><unk>"
+        ],
+        "pred": "5",
+        "label": "2",
+        "cor_flag": false
+    },
+    {
+        "question": "Jesse  enjoyed remembering the past because he helped him understand it.  And understanding the past helped him with doing what?\n(1) phoning (2) nostalgia (3) writing down (4) active (5) being prepared ",
+        "answer": [
+            " Remembering the past can help us understand the past. Understanding the past can help us prepare for the future. So the answer is: (5) being prepared.</s><unk>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "Why do some people get passports and go to different locations?\n(1) believe in god (2) smoke marijuana (3) desire to travel (4) use weapons (5) throw away ",
+        "answer": [
+            " People get passports and travel to different locations for various reasons, but the most common reason is to satisfy their desire to travel. So the answer is: (3) desire to travel. </s>"
+        ],
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "What does a successful dog grooming session likely to make a owner feel?\n(1) cleanliness (2) mistakes (3) growth (4) satisfaction (5) late ",
+        "answer": [
+            " A successful dog grooming session is likely to make the owner feel satisfied. Satisfaction is the correct answer.  \n\nAnswer: (4) satisfaction.</s><unk>"
+        ],
+        "pred": "4",
+        "label": "4",
+        "cor_flag": true
+    },
+    {
+        "question": "What would you put coins into to make it work?\n(1) stove (2) water fountain (3) desk (4) purse (5) jar ",
+        "answer": [
+            " Coins are usually put into a jar to make it work. So the answer is: (5) jar. </s>"
+        ],
+        "pred": "5",
+        "label": "2",
+        "cor_flag": false
+    },
+    {
+        "question": "What was the man encouraged to do after he expressed his anger violently?\n(1) cool off (2) punch (3) illustrate point (4) fight (5) release energy ",
+        "answer": [
+            " If someone expresses anger violently, it is usually not a good idea to encourage them to continue. Instead, it is better to encourage them to calm down. So the answer is: (1) cool off. </s><unk><unk>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true
+    },
+    {
+        "question": "A farmer sees a weasel in the woods, where is the farmer?\n(1) chicken coop (2) beach (3) fairytale (4) great outdoors (5) corn fields ",
+        "answer": [
+            " The farmer is likely to be in the great outdoors, tending to his crops. So the answer is: (4) great outdoors. </s><unk><unk><unk><unk>"
+        ],
+        "pred": "4",
+        "label": "4",
+        "cor_flag": true
+    },
+    {
+        "question": "Where are you if you've paid to get a pizza?\n(1) popular (2) baked in oven (3) restaurant (4) oven (5) plate ",
+        "answer": [
+            " If you have paid for a pizza, you are likely to be at a restaurant. So the answer is: (3) restaurant. </s>"
+        ],
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "A human wants to submerge himself in water, what should he use?\n(1) whirlpool bath (2) coffee cup (3) cup (4) soft drink (5) puddle ",
+        "answer": [
+            " If a human wants to submerge himself in water, he should use a (5) puddle. A puddle is a small amount of water that is shallow enough for a person to immerse themselves in. The other options, such as a whirlpool bath, coffee cup, or soft drink, are not suitable for submerging oneself in water.</s>"
+        ],
+        "pred": "5",
+        "label": "1",
+        "cor_flag": false
+    },
+    {
+        "question": "If you spend a long time running after a ball how are you likely to feel?\n(1) laughter (2) sweating (3) embarrassed (4) breathing heavily (5) tiredness ",
+        "answer": [
+            " If you spend a long time running after a ball, you will likely feel tired. So the answer is: (5) tiredness.</s><unk>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "What very cold area in the east can a crab be found?\n(1) fish market (2) shallow waters (3) atlantic ocean (4) fresh water (5) shore line ",
+        "answer": [
+            " Crabs are usually found in shallow waters. The Atlantic Ocean is a large body of saltwater. So the answer is: (2) shallow waters.</s><unk>"
+        ],
+        "pred": "2",
+        "label": "3",
+        "cor_flag": false
+    },
+    {
+        "question": "He kept plugging away in his cubicle, it seemed he was the only person not called into the what?\n(1) building (2) conference (3) assessment (4) demonstration (5) garage ",
+        "answer": [
+            " If he is the only person not called into the meeting, he is the only one left behind. So the answer is: (1) building. </s><unk><unk><unk>"
+        ],
+        "pred": "1",
+        "label": "2",
+        "cor_flag": false
+    },
+    {
+        "question": "The flasks was used to distill elements, where was is being used?\n(1) laboratory (2) chemistry lab (3) coat pocket (4) after hours speakeasy (5) bordello ",
+        "answer": [
+            " Flasks are used to distill elements in a laboratory. So the answer is: (1) laboratory. </s><unk>"
+        ],
+        "pred": "1",
+        "label": "2",
+        "cor_flag": false
+    },
+    {
+        "question": "What is main benefit to exercising?\n(1) losing weight (2) healthy (3) get in shape (4) weight loss (5) sweat ",
+        "answer": [
+            " The main benefit of exercising is to improve one's health. Exercise can improve cardiovascular health, increase strength and flexibility, and reduce the risk of chronic diseases such as diabetes and heart disease. Therefore, the answer is: (2) healthy. </s>"
+        ],
+        "pred": "2",
+        "label": "3",
+        "cor_flag": false
+    },
+    {
+        "question": "What is a wet person likely to do?\n(1) gain weight (2) thank god (3) catch cold (4) suicide (5) cross street ",
+        "answer": [
+            " If a person is wet, they may be likely to catch a cold. So the answer is: (3) catch cold. </s>"
+        ],
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "Where would you find gazelle under a G?\n(1) open field (2) ivory coast (3) dictionary (4) steppe (5) encyclopedia ",
+        "answer": [
+            " Gazelle is an animal, and it is usually found in the open field. So the answer is: (1) open field. </s>"
+        ],
+        "pred": "1",
+        "label": "5",
+        "cor_flag": false
+    },
+    {
+        "question": "What kind of status is the bald eagle given?\n(1) outside (2) world (3) protection (4) colorado (5) america ",
+        "answer": [
+            " The bald eagle is the national bird of the United States of America. In 1782, the bald eagle was officially adopted as a symbol of the United States. In 1940, the Bald Eagle Protection Act made it illegal to hunt or kill bald eagles. In 1973, the bald eagle was listed as an endangered species. In 2007, the bald eagle was removed from the endangered species list, but it is still protected under the Bald and Golden Eagle Protection Act and the Migratory Bird Treaty Act. So the answer is: (3) protection.  </s>"
+        ],
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "What is the primary purpose of cars?\n(1) cost money (2) slow down (3) move people (4) turn right (5) get girls ",
+        "answer": [
+            " The primary purpose of cars is to move people from one place to another. So the answer is: (3) move people. </s>"
+        ],
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "What do you write letter in in America?\n(1) syllable (2) post office (3) envelope (4) english alphabet (5) word ",
+        "answer": [
+            " In America, people usually write letters in envelopes. So the answer is: (3) envelope. </s>"
+        ],
+        "pred": "3",
+        "label": "4",
+        "cor_flag": false
+    },
+    {
+        "question": "When you get an F, you fail. If you get A's you are?\n(1) passed (2) completing (3) passed (4) passing (5) succeeding ",
+        "answer": [
+            " If you get A's, you are passing. So the answer is: (4) passing. </s>"
+        ],
+        "pred": "4",
+        "label": "4",
+        "cor_flag": true
+    },
+    {
+        "question": "what is printed with ink and distributed daily?\n(1) fountain pen (2) squid (3) newspaper (4) book (5) printer ",
+        "answer": [
+            " Newspaper is printed with ink and distributed daily. So the answer is: (3) newspaper. </s>"
+        ],
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "Why is religion so hard to understand?\n(1) both positive and negative (2) unknowable (3) important to people (4) ocean (5) confusing ",
+        "answer": [
+            " Religion is a complex and multifaceted concept that can be difficult to understand because it involves a wide range of beliefs, practices, and interpretations. It can be both positive and negative, as it can bring people comfort, hope, and a sense of community, but it can also be used to justify violence, discrimination, and oppression. Additionally, religion is often deeply personal and subjective, making it difficult to understand and define objectively. So the answer is: (2) unknowable.</s><unk><unk>"
+        ],
+        "pred": "2",
+        "label": "5",
+        "cor_flag": false
+    },
+    {
+        "question": "What does someone typically feel when applying for a job?\n(1) horror (2) anxiety and fear (3) rejection (4) increased workload (5) being employed ",
+        "answer": [
+            " When applying for a job, someone may feel anxiety and fear of being rejected. So the answer is: (2) anxiety and fear. </s>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "question": "When you need to rest it's often because you have been doing what?\n(1) action (2) sleep (3) sleeping (4) in motion (5) using energy ",
+        "answer": [
+            " When you need to rest, it is often because you have been doing something that requires energy. You may have been using energy to do something. So the answer is: (5) using energy.  </s>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "Bob the lizard lives in a warm place with lots of water.  Where does he probably live?\n(1) rock (2) tropical rainforest (3) jazz club (4) new mexico (5) rocky places ",
+        "answer": [
+            " Lizards usually live in warm places with lots of water, and tropical rainforests are warm places with lots of water. So the answer is: (2) tropical rainforest.</s><unk><unk>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "question": "What do people do when networking?\n(1) build trust (2) hurry home (3) ignore people (4) believe in god (5) jump to conclusions ",
+        "answer": [
+            " Networking is the act of connecting with other people to share information, resources, and opportunities. When people network, they build relationships and establish trust with others in their industry or profession. So the answer is: (1) build trust.</s><unk>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true
+    },
+    {
+        "question": "What will a person do at work?\n(1) cross street (2) draw attention to themselves (3) make money (4) falling down (5) come home ",
+        "answer": [
+            " People go to work to make money. So the answer is: (3) make money.  </s><unk>"
+        ],
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "The car was going from Alabama to New York, what was its goal?\n(1) head north (2) speed up (3) heading north (4) go fast (5) headed south ",
+        "answer": [
+            " If the car is going from Alabama to New York, it is heading north. So the answer is: (3) heading north. </s>"
+        ],
+        "pred": "3",
+        "label": "1",
+        "cor_flag": false
+    },
+    {
+        "question": "Where are you likely to find a supermarket?\n(1) buy food for family (2) city or town (3) get supplies (4) strip mall (5) vermont ",
+        "answer": [
+            " You are likely to find a supermarket in a city or town. So the answer is: (2) city or town.  </s>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "question": "Sally was bored because she didn't like the junk that was on what?\n(1) drawer (2) garage (3) caddy (4) bed (5) television ",
+        "answer": [
+            " If Sally was bored because she didn't like the junk on something, it is likely that she was bored with what she was watching on the television. So the answer is: (5) television.</s><unk>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "John rode on the plain until it reached the ocean and couldn't go any farther. What might he have bee on?\n(1) mountain (2) fancy (3) sandplain (4) cliff (5) gorge ",
+        "answer": [
+            " If John rode on the plain until it reached the ocean and couldn't go any farther, he must have been on a sandplain. So the answer is: (3) sandplain.  </s>"
+        ],
+        "pred": "3",
+        "label": "4",
+        "cor_flag": false
+    },
+    {
+        "question": "Where is the closest place from where you could borrow salt?\n(1) ocean water (2) table (3) shaker (4) neighbor's house (5) lake ",
+        "answer": [
+            " You can borrow salt from your neighbor's house. So the answer is (4) neighbor's house. </s><unk>"
+        ],
+        "pred": "4",
+        "label": "4",
+        "cor_flag": true
+    },
+    {
+        "question": "Where would you expect to find white mice?\n(1) bell cat (2) bush (3) attic (4) countryside (5) laboratory ",
+        "answer": [
+            " White mice are often used as laboratory animals. So the answer is: (5) laboratory.  </s>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "The weasel ran up away from danger, somebody joked only our first president could get him down from the what?\n(1) washington dc (2) ladder (3) natural history museum (4) cherry tree (5) chicken coop ",
+        "answer": [
+            " The joke is referring to George Washington, the first president of the United States. The joke is saying that only George Washington could get the weasel down from the tree. So the answer is: (5) chicken coop. </s>"
+        ],
+        "pred": "5",
+        "label": "4",
+        "cor_flag": false
+    },
+    {
+        "question": "The program kept getting errors, the amateur end user began to what?\n(1) get mad (2) compile (3) debug (4) write code (5) get frustrated ",
+        "answer": [
+            " If the program kept getting errors, the amateur end user may not know how to fix the errors. In that case, the user may get frustrated. So the answer is: (5) get frustrated.  </s>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "I am looking for honey right from the source, where should I look?\n(1) last all night (2) beehive (3) farmer's market (4) jar (5) honeyful ",
+        "answer": [
+            " If you want to get honey right from the source, you should look for the beehive. Bees make honey in the beehive. So the answer is: (2) beehive. </s>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "question": "What uses a ribbon to put words on paper?\n(1) wrapping paper (2) girl's hair (3) bath (4) floral arrangement (5) typewriter ",
+        "answer": [
+            " Typewriters use ribbons to put words on paper. So the answer is: (5) typewriter. </s>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "The juror was quite bored and zoning out but wanted to convey he was hearing testimony, so he just sat there doing what?\n(1) take notes (2) nodding (3) change of heart (4) writing down (5) listening ",
+        "answer": [
+            " If the juror is bored and zoning out, he may not be paying attention to the testimony. However, if he wants to convey that he is hearing the testimony, he may nod to show that he is listening. So the answer is: (2) nodding.</s><unk><unk>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "question": "Where could you go to between 1000 and 10000 restaurant?\n(1) big city (2) town (3) small town (4) canada (5) yellow pages ",
+        "answer": [
+            " If you want to go to a restaurant between 1000 and 10000, you can check the Yellow Pages. Yellow Pages is a directory of businesses, including restaurants. So the answer is: (5) Yellow Pages.</s><unk>"
+        ],
+        "pred": "5",
+        "label": "1",
+        "cor_flag": false
+    },
+    {
+        "question": "Where would you get some wood if you do not have any?\n(1) carpet (2) boat (3) river (4) lumberyard (5) synagogue ",
+        "answer": [
+            " If you do not have any wood, you can get some from a lumberyard. So the answer is: (4) lumberyard.  </s>"
+        ],
+        "pred": "4",
+        "label": "4",
+        "cor_flag": true
+    },
+    {
+        "question": "Piece of land in Canada where you can find marmot?\n(1) north america (2) united states (3) vancouver island (4) american (5) cage ",
+        "answer": [
+            " Marmots are found in the mountainous regions of North America. Vancouver Island is a piece of land in Canada. So the answer is: (3) vancouver island.</s><unk>"
+        ],
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "He was beginning to regret taking the fight when he saw how what his opponent was?\n(1) fun (2) joy (3) satisfaction (4) confident (5) pride ",
+        "answer": [
+            " When someone is about to engage in a fight, they may feel confident. If the opponent is confident, the person who is about to fight may regret taking the fight. So the answer is: (4) confident. </s>"
+        ],
+        "pred": "4",
+        "label": "4",
+        "cor_flag": true
+    },
+    {
+        "question": "Someone who had a very bad flight might be given a trip in this to make up for it?\n(1) first class (2) propitious (3) reputable (4) one (5) sufficient ",
+        "answer": [
+            " If someone had a very bad flight, the airline may offer them a trip in first class to make up for it. So the answer is: (1) first class.  </s>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true
+    },
+    {
+        "question": "What might you need to do cleaning?\n(1) sing a song (2) neatness (3) allergies (4) healthy living (5) using water ",
+        "answer": [
+            " Cleaning is the process of removing dirt, stains, and impurities from objects or surfaces. We usually use water to clean. So the answer is: (5) using water.</s><unk>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "Ficus can be planted in a yard to make summer more bearable, what sort of areas do they create?\n(1) shady places (2) screened porch (3) pots (4) ceramics (5) clay pot ",
+        "answer": [
+            " Ficus can be planted in a yard to make summer more bearable by providing shade. So the answer is: (1) shady places. </s><unk>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true
+    },
+    {
+        "question": "If you wanted a license to catch crabs, what government office would you go to?\n(1) most offices (2) fish department (3) fancy restaurant (4) government submarine (5) chesapeake bay ",
+        "answer": [
+            " If you want to catch crabs, you may need a license to do so. In that case, you may go to the government office that is responsible for issuing fishing licenses. So the answer is: (2) fish department.</s><unk>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "question": "What is the likely result of buying products in excess?\n(1) running out of money (2) spending money (3) poverty (4) comparison shopping (5) overstocking ",
+        "answer": [
+            " If people buy products in excess, they will likely overstock. So the answer is: (5) overstocking. </s><unk>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "A potato is kept in the cellar, where is likely to be stored?\n(1) farmer's market (2) grocery bag (3) pantry (4) bushel basket (5) fridge ",
+        "answer": [
+            " Potatoes are usually stored in a cool, dark place. A cellar is a common place to store potatoes. So the answer is: (3) pantry.  </s>"
+        ],
+        "pred": "3",
+        "label": "4",
+        "cor_flag": false
+    },
+    {
+        "question": "Dan fell off a bar stool.  He did this because he was what than ever before?\n(1) kitchen (2) drunker (3) tavern (4) restaurant (5) shorter ",
+        "answer": [
+            " Dan fell off a bar stool because he was drunker than ever before. So the answer is: (2) drunker. </s>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "question": "Where can a human find clothes that aren't pants?\n(1) pants shop (2) on planet earth (3) dress shop (4) school (5) train wreck ",
+        "answer": [
+            " Clothes that are not pants can be found in a dress shop. So the answer is: (3) dress shop.</s><unk>"
+        ],
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "The homeowner frowned at the price of gas, what did he have to do later?\n(1) own home (2) mail property tax payments (3) board windows (4) cut grass (5) receive mail ",
+        "answer": [
+            " If the homeowner frowned at the price of gas, it means that the price of gas is too high for him. In that case, he may have to reduce his usage of gas. So the answer is: (4) cut grass. </s><unk>"
+        ],
+        "pred": "4",
+        "label": "4",
+        "cor_flag": true
+    },
+    {
+        "question": "Where would stones not be arranged in a path?\n(1) quarries (2) field (3) park (4) bridge (5) made from rocks ",
+        "answer": [
+            " Stones are not usually arranged in a path in a quarry. Quarries are places where stones are extracted from the ground. So the answer is: (1) quarries.  </s>"
+        ],
+        "pred": "1",
+        "label": "2",
+        "cor_flag": false
+    },
+    {
+        "question": "Why might a person be known as a liar?\n(1) have no home (2) false information (3) hungry (4) made fun of (5) brain tumor ",
+        "answer": [
+            " If a person is known as a liar, it is likely that they provide false information. So the answer is: (2) false information.  </s>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "question": "Blowfish require what specific thing to live?\n(1) sea water (2) hatred (3) fish market (4) body of water (5) jungle ",
+        "answer": [
+            " Blowfish are aquatic animals that live in the sea. They require sea water to survive. So the answer is: (1) sea water. </s>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true
+    },
+    {
+        "question": "Where is a great place to buy fresh fruit?\n(1) san francisco (2) refrigerator (3) big box retailer (4) tree (5) market ",
+        "answer": [
+            " Fresh fruits are usually sold in markets. So the answer is: (5) market. </s>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "Despite the large crowds, how did the depressed man feel?\n(1) small group (2) alone (3) solitary (4) solitude (5) panic ",
+        "answer": [
+            " Despite the large crowds, the depressed man may feel overwhelmed and alone. So the answer is: (2) alone.  </s><unk>"
+        ],
+        "pred": "2",
+        "label": "3",
+        "cor_flag": false
+    },
+    {
+        "question": "What do you do when you're in a new place and want to see new things?\n(1) interesting (2) look around (3) take pictures (4) change of surroundings (5) new experience ",
+        "answer": [
+            " When we are in a new place, we usually want to explore and see new things. We may look around, take pictures, and try to have a new experience. So the answer is: (5) new experience.</s><unk>"
+        ],
+        "pred": "5",
+        "label": "2",
+        "cor_flag": false
+    },
+    {
+        "question": "What do you use to carry your briefcase?\n(1) office building (2) school (3) courtroom (4) airport (5) hand ",
+        "answer": [
+            " People usually carry their briefcase by hand. So the answer is: (5) hand. </s>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "Sam was a stranger.  Even so, Mark treated him like what?\n(1) friend (2) family (3) known person (4) park (5) outsider ",
+        "answer": [
+            " Mark treated Sam like a known person. Even though Sam is a stranger, Mark treated him with kindness and respect. So the answer is: (3) known person. </s><unk>"
+        ],
+        "pred": "3",
+        "label": "2",
+        "cor_flag": false
+    },
+    {
+        "question": "The landscaper was carefully arching stones together, he was creating an elaborate what over the creek?\n(1) park (2) made from rocks (3) balloon (4) field (5) bridge ",
+        "answer": [
+            " The landscaper was carefully arching stones together, he was creating an elaborate bridge over the creek. So the answer is: (5) bridge. </s>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "John and Tim like playing. It makes them what?\n(1) feeling happy (2) learning (3) injury (4) burn (5) get hungry ",
+        "answer": [
+            " Playing usually makes people happy. So the answer is: (1) feeling happy. </s>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true
+    },
+    {
+        "question": "What do they call the trash in Australia?\n(1) dirt (2) subway (3) state park (4) container (5) dustbin ",
+        "answer": [
+            " In Australia, they call the trash \"rubbish\". So the answer is: (5) dustbin.  </s>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "The child didn't know the problems his mother was going through, all he had was what for her?\n(1) care (2) balloon (3) loved (4) become adult (5) learn ",
+        "answer": [
+            " The word \"care\" is the correct answer. Children may not understand the problems of their parents, but they can provide care and support to them. \n\nSo the answer is: (1) care. </s>"
+        ],
+        "pred": "1",
+        "label": "3",
+        "cor_flag": false
+    },
+    {
+        "question": "Where is likely to not just have a kosher restaurant?\n(1) jerusalem (2) jewish neighborhoods (3) dining in (4) new york city (5) dining ",
+        "answer": [
+            " Kosher restaurants are usually found in Jewish neighborhoods. So the answer is: (2) jewish neighborhoods.</s><unk>"
+        ],
+        "pred": "2",
+        "label": "4",
+        "cor_flag": false
+    },
+    {
+        "question": "The smile gave away that the what was one of happiness?\n(1) manual (2) rainbow (3) cry (4) frown (5) make others happy too ",
+        "answer": [
+            " A smile is usually a sign of happiness. So the answer is: (5) make others happy too. </s>"
+        ],
+        "pred": "5",
+        "label": "3",
+        "cor_flag": false
+    },
+    {
+        "question": "What might someone believe in if they are cleaning clothes?\n(1) feminism (2) sanitation (3) ruined (4) wrinkles (5) buttons to fall off ",
+        "answer": [
+            " When someone is cleaning clothes, they may believe in the importance of sanitation and cleanliness. So the answer is: (2) sanitation.  </s>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true
+    },
+    {
+        "question": "When someone has little knowledge and is judging someone they are considered what?\n(1) objectivity (2) knowing yourself (3) experience (4) ignorance (5) introduction ",
+        "answer": [
+            " When someone has little knowledge and is judging someone, they are considered ignorant. So the answer is: (4) ignorance. </s>"
+        ],
+        "pred": "4",
+        "label": "4",
+        "cor_flag": true
+    },
+    {
+        "question": "How is a person likely to communicatewith others?\n(1) say words (2) meet friends (3) open mouth (4) thank god (5) die of cancer ",
+        "answer": [
+            " The most common way to communicate with others is by speaking. So the answer is: (1) say words. </s>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true
+    },
+    {
+        "question": "He walked into the room and had a great shock, his friends had what him?\n(1) expected (2) wanting (3) calm (4) thundershock (5) surprised ",
+        "answer": [
+            " If someone walks into a room and has a great shock, it is likely that he is surprised. So the answer is: (5) surprised. </s><unk><unk><unk><unk>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "The lock kept the steering wheel from moving, but the thief still took his chances and began to work on the what?\n(1) keep cloesd (2) train (3) ignition switch (4) drawer (5) firearm ",
+        "answer": [
+            " If the lock kept the steering wheel from moving, it must be the ignition switch. The thief may try to work on the ignition switch to start the car. So the answer is: (3) ignition switch. </s><unk>"
+        ],
+        "pred": "3",
+        "label": "3",
+        "cor_flag": true
+    },
+    {
+        "question": "When wildlife reproduce we often refer to what comes out as what?\n(1) raise children (2) have children (3) photo copy (4) offspring (5) accidently got pregnant somehow ",
+        "answer": [
+            " When wildlife reproduce, they have offspring. So the answer is: (4) offspring.  </s>"
+        ],
+        "pred": "4",
+        "label": "4",
+        "cor_flag": true
+    },
+    {
+        "question": "Where can books be read?\n(1) cabinet (2) backpack (3) table (4) shelf (5) sink ",
+        "answer": [
+            " Books can be read on a table, shelf, or even on a backpack. However, the most common place to read books is on a table or shelf. So the answer is: (3) table or (4) shelf.</s>"
+        ],
+        "pred": "4",
+        "label": "3",
+        "cor_flag": false
+    },
+    {
+        "question": "The bell rang, and the congregation began to what in to the church?\n(1) run away (2) wind instrument (3) funnel (4) blunderbuss (5) associated with telephones ",
+        "answer": [
+            " The bell rang, and the congregation began to (5) enter the church. </s><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk>"
+        ],
+        "pred": "5",
+        "label": "3",
+        "cor_flag": false
+    },
+    {
+        "question": "If you have a condo in a Wisconsin city known for beer, where are you?\n(1) city (2) electrical circuit (3) residential area (4) suburbia (5) milwaukee ",
+        "answer": [
+            " Milwaukee is a city in Wisconsin known for its beer. So the answer is: (5) Milwaukee. </s>"
+        ],
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "question": "Where are bus stops more common in what parts?\n(1) ocean (2) getting off of bus (3) airport (4) urban area (5) towns ",
+        "answer": [
+            " Buses are more common in urban areas, where there are more people and more traffic. So the answer is: (4) urban area. </s><unk><unk><unk>"
+        ],
+        "pred": "4",
+        "label": "4",
+        "cor_flag": true
+    },
+    {
+        "acc": 0.69
+    }
+]

@@ -1,9 +1,10 @@
 import json
 import random
 import re
-random.seed(17)
+
 from config import *
 
+random.seed(17)
 
 class DataLoader():
     def __init__(self, dataset,  data_length, split='dev', shuffle=True) -> None:
@@ -11,7 +12,7 @@ class DataLoader():
         self.__label_ls = []
         self.__answer_ls = []
         self.__option_ls = []
-        self.__idx = 0
+        self.idx = 0
         self.__len = data_length
         self.__load_data(dataset, split=split)
         if shuffle and dataset != 'hella':
@@ -115,14 +116,14 @@ class DataLoader():
     
     
     def __get_next_question_stem(self):
-        return self.__question_stem_ls[self.__idx]
+        return self.__question_stem_ls[self.idx]
       
         
     def __get_next_options(self):
-        return self.__option_ls[self.__idx]
+        return self.__option_ls[self.idx]
     
     def __get_next_answer(self):
-        return self.__answer_ls[self.__idx]
+        return self.__answer_ls[self.idx]
     
     
     def __get_next_option_string(self):
@@ -141,19 +142,19 @@ class DataLoader():
         
     
     def __get_next_label(self):
-        return self.__label_ls[self.__idx]
+        return self.__label_ls[self.idx]
     
     def __iter__(self):
         return self
 
     def __next__(self):
-        if self.__idx < self.__len:
+        if self.idx < self.__len:
             stem = self.__get_next_question_stem()
             question = self.__get_next_question()
             option = self.__get_next_options()
             label = self.__get_next_label()
             answer = self.__get_next_answer()
-            self.__idx += 1
+            self.idx += 1
             return {'stem':stem, 'question':question, 'option':option, 'label':label, 'answer':answer}
         else:
             raise StopIteration()
@@ -223,10 +224,10 @@ class CoTLoader():
             question = full_cot_data[idx]['question']
             cot = full_cot_data[idx]['answer']
             cots = self.split_cot(cot)
-            if mode == 'C2W':
-                pred = full_cot_data[idx]['pred']
+            if mode == 'W2C':
+                pred = full_base_data[idx]['pred'] 
             else:
-                pred = full_base_data[idx]['pred']
+                pred = full_cot_data[idx]['pred']
             label = full_cot_data[idx]['label']
             msg = {'question':question, 'answer':cot, 'steps':cots, 'pred':pred, 'label':label}
             data.append(msg)
@@ -235,3 +236,88 @@ class CoTLoader():
         with open(cache_file_path,'w') as f:
             json.dump(cache_js, f, indent=4)          
         return data, index
+    
+    
+class InterventionData():
+    def __init__(self, msg, tokenizer, prompter) -> None:
+        self.question = None 
+        self.cot = None 
+        self.reg_cot = None 
+        self.pred = None 
+        self.label = None 
+        self.load_data(msg)
+        
+        self.prompt_end = None 
+        self.question_end = None
+        self.cot_end = None 
+        self.reg_end = None  
+        self.cot_input_ids = None 
+        self.reg_input_ids = None
+        self.pred_ids = None
+        self.label_ids = None 
+        self.tokenize_data(tokenizer, prompter)
+        
+        self.cot_intervention_idx = {}
+        self.reg_intervention_idx = {} 
+        self.get_intervention_idx(tokenizer)
+
+        return 
+    
+    def load_data(self, msg):
+        self.question = msg['question']
+        self.cot = '.'.join(msg['steps']) + '.'
+        self.reg_cot = '.'.join(msg['reg']) + '.'
+        self.pred = msg['pred']
+        self.label = msg['label']
+        
+        return 
+    
+    
+    def tokenize_data(self, tokenizer, prompter):
+        cot_question = prompter.wrap_input(self.question, icl_cnt=5)
+        cot_input = cot_question + self.cot + ' So the answer is: ('
+        reg_input = cot_question + self.reg_cot + ' So the answer is: ('
+        
+        question_len = len(prompter.user_prompt.format(cot_question))
+        prompt = prompter.wrap_input(cot_question, icl_cnt=5)[:-question_len]
+        self.reg_input_ids = tokenizer(reg_input, return_tensors="pt").input_ids
+        self.cot_input_ids = tokenizer(cot_input, return_tensors="pt").input_ids
+        self.pred_ids = tokenizer(self.pred, return_tensors="pt").input_ids[:,-1]
+        self.label_ids = tokenizer(self.label, return_tensors="pt").input_ids[:,-1]
+        
+        self.prompt_end = len(tokenizer(prompt, return_tensors="pt").input_ids[0]) - 1
+        self.question_end = len(tokenizer(cot_question, return_tensors="pt").input_ids[0])
+        self.cot_end = len(tokenizer(cot_question + self.cot, return_tensors="pt").input_ids[0])
+        self.reg_end = len(tokenizer(cot_question + self.reg_cot, return_tensors="pt").input_ids[0])
+        
+        return 
+        
+        
+    def get_intervention_idx(self, tokenizer):
+        cot_tokens = tokenizer.convert_ids_to_tokens(self.cot_input_ids[0, self.prompt_end:self.question_end])
+        # reg_tokens = tokenizer.convert_ids_to_tokens(self.reg_input_ids[0, self.prompt_end:self.reg_end+1])
+
+        i = 0
+        self.cot_intervention_idx[0] = []
+        while cot_tokens[i] != '<0x0A>':
+            self.cot_intervention_idx[0].append(i+self.prompt_end)
+            i += 1
+        i += 1
+        self.cot_intervention_idx[1] = []
+        while cot_tokens[i] != '▁[':
+            self.cot_intervention_idx[1].append(i+self.prompt_end)
+            i += 1
+        idx = 2
+        self.cot_intervention_idx[idx] = []
+        cot_tokens = tokenizer.convert_ids_to_tokens(self.cot_input_ids[0, self.question_end:self.cot_end])
+        for i in range(len(cot_tokens)):
+            self.cot_intervention_idx[idx].append(i+self.question_end)
+            if cot_tokens[i] == '.' and i < len(cot_tokens) - 2:
+                idx += 1
+                self.cot_intervention_idx[idx] = []
+        
+        # self.reg_intervention_idx.append(len(self.reg_input_ids[0])-1)
+    
+        return 
+
+        

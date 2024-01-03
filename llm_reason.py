@@ -163,18 +163,19 @@ result_path = f'./result/{dataset}/{model_name}_{task}_{split}_{datalength}.json
 if search == 'beam':
     result_path = f'./result/{dataset}/{model_name}_{task}_{split}_{datalength}_beam.json'
 
-config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
-with init_empty_weights():
-    model = AutoModelForCausalLM.from_config(config, torch_dtype=torch.float16, trust_remote_code=True)
-    # model = AutoModelForSeq2SeqLM.from_config(config, torch_dtype=torch.float16, trust_remote_code=True)
-no_split_modules = model._no_split_modules
-model = load_checkpoint_and_dispatch(
-    model, model_path, device_map="auto", no_split_module_classes=no_split_modules
-)
+# config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
+# with init_empty_weights():
+#     model = AutoModelForCausalLM.from_config(config, torch_dtype=torch.float16, trust_remote_code=True)
+#     # model = AutoModelForSeq2SeqLM.from_config(config, torch_dtype=torch.float16, trust_remote_code=True)
+# no_split_modules = model._no_split_modules
+# model = load_checkpoint_and_dispatch(
+#     model, model_path, device_map="auto", no_split_module_classes=no_split_modules
+# )
+model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16, trust_remote_code=True, device_map='auto')
 tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)  
 prompter = LlamaPrompter(dataset=dataset, task=task)
 dataloader = DataLoader(dataset=dataset, data_length=datalength, split=split)
-sent_model = SentenceTransformer('./model/all-mpnet-base-v2')
+# sent_model = SentenceTransformer('./model/all-mpnet-base-v2')
 class KeywordsStoppingCriteria(StoppingCriteria):
     def __init__(self, keywords_ids:list):
         self.keywords = keywords_ids
@@ -214,7 +215,7 @@ for data in tqdm(dataloader):
                 return_dict_in_generate=True,
                 output_scores=True,
                 max_new_tokens=500,
-                num_beams=5,
+                num_beams=3,
                 # diversity_penalty=1.0,
                 do_sample=True,
                 temperature=1.3,

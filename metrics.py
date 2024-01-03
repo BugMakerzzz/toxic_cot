@@ -26,7 +26,7 @@ def draw_plot(layers, scores, labels, path):
 
 def draw_acc(layers, scores, label, path):
     x_values = layers
-    plt.plot(x_values, scores, label=label, marker='o')
+    plt.plot(x_values, scores, label=label, marker='.')
     plt.xlabel('Layers')
     plt.ylabel('Acc')
     # 设置横轴范围
@@ -53,16 +53,18 @@ def draw_heat(layers, index, scores, path):
     plt.close()
   
   
-def draw_line_plot(x_range, scores, path):
-    x_values = []
-    y_values = []
-    for i in range(len(scores)):
-        score = scores[i]
-        x = [x_range[i]] * len(score)
-        x_values += x
-        y_values += score 
-    data_plot = pd.DataFrame({"index":x_values, "score":y_values})
-    sns.lineplot(x = "index", y = "score", data=data_plot, err_style='bars')
+def draw_line_plot(x_range, results, labels, path):
+    layers = []
+    scores = []
+    tags = []
+    for i in range(len(results)):
+        scores += results[i]
+        layers += x_range * 2
+        tags += [labels[0]] * len(x_range)
+        tags += [labels[1]] * len(x_range)
+
+    data_plot = pd.DataFrame({"layers":layers, "scores":scores, "tags":tags})
+    sns.lineplot(x = "layers", y = "scores", hue='tags', data=data_plot)
     plt.savefig(path)
     plt.close()
 # # def extrat_gsm8k(text):
