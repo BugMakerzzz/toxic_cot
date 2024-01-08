@@ -52,16 +52,16 @@ def draw_heat(layers, index, scores, path):
     plt.savefig(path)
     plt.close()
   
-  
+
 def draw_line_plot(x_range, results, labels, path):
     layers = []
     scores = []
     tags = []
     for i in range(len(results)):
         scores += results[i]
-        layers += x_range * 2
-        tags += [labels[0]] * len(x_range)
-        tags += [labels[1]] * len(x_range)
+        layers += x_range * len(labels)
+        for i in range(len(labels)): 
+            tags += [labels[i]] * len(x_range)
 
     data_plot = pd.DataFrame({"layers":layers, "scores":scores, "tags":tags})
     sns.lineplot(x = "layers", y = "scores", hue='tags', data=data_plot)
@@ -78,6 +78,7 @@ def draw_line_plot(x_range, results, labels, path):
 # results = [0.19, 0.18, 0.16, 0.13, 0.14, 0.21, 0.18, 0.2, 0.2]
 
 def draw_attr_heat(scores, x_tokens, y_tokens, path):
+    
     ax=sns.heatmap(scores, cmap="RdBu_r", center=0, xticklabels=x_tokens, yticklabels=y_tokens)
     # ax=sns.heatmap(scores, cmap="RdBu_r", xticklabels=layers, yticklabels=index)
     plt.xticks(size = 2)

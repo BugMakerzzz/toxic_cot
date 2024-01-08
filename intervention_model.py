@@ -64,11 +64,11 @@ class Model():
             raise Exception(f'Model not supported')
 
 
-    def intervention_experiment(self, interventions):
+    def intervention_experiment(self, interventions, reps):
         intervention_results = {}
         progress = tqdm(total=len(interventions), desc='performing interventions')
         for idx, intervention in enumerate(interventions):
-            intervention_results[idx] = self.neuron_intervention_single_experiment(intervention=intervention)
+            intervention_results[idx] = self.neuron_intervention_single_experiment(intervention=intervention, reps=reps)
             progress.update()
 
         return intervention_results
@@ -126,8 +126,8 @@ class Model():
 
     def get_probability_for_example(self, context, res_tok):
         """Return probabilities of single-token candidates given context"""
-        if len(res_tok) > 1:
-            raise ValueError(f"Multiple tokens not allowed: {res_tok}")
+        # if len(res_tok) > 1:
+        #     raise ValueError(f"Multiple tokens not allowed: {res_tok}")
 
         if self.is_flan:
             decoder_input_ids = torch.tensor([[0]] * context.shape[0]).to(self.device)
@@ -135,11 +135,11 @@ class Model():
                 'cpu')
         else:
             logits = self.model(context.to(self.device))[0].to('cpu')
-        logits = logits[:, -1, :].float()
+        logits = logits[:, -3, :].float()
         probs = F.softmax(logits, dim=-1)
-        probs_res = probs[:, res_tok[0]].squeeze().tolist()
-        
-        return probs_res
+        # probs = logits[:,range(logits.shape[1]), res_tok].sum(axis=-1).tolist()
+        probs = probs[:, res_tok[0]].squeeze().tolist()
+        return probs
 
     def get_distribution_for_example(self, context):
         if self.is_flan:
@@ -153,7 +153,7 @@ class Model():
         return probs_subset
 
 
-    def neuron_intervention_single_experiment(self, intervention):
+    def neuron_intervention_single_experiment(self, intervention, reps):
         """
         run one full neuron intervention experiment
         """
@@ -161,54 +161,46 @@ class Model():
         with torch.no_grad():
 
             # Probabilities without intervention (Base case)
-            distrib_base = self.get_distribution_for_example(intervention.cot_input_ids)
-            distrib_alt = self.get_distribution_for_example(intervention.reg_input_ids)
-            distrib_base = distrib_base.numpy()
-            distrib_alt = distrib_alt.numpy()
-
+            
             context = intervention.cot_input_ids
-
+            base_probs = self.get_probability_for_example(context, intervention.pred_ids)
             # positions = list(range(intervention.cot_prompt_len, len(context.squeeze()))) if all_tokens else [-1]
 
             positions = intervention.cot_intervention_idx
             
-            res_base_probs = {}
             res_alt_probs = {}
 
             for i, position in positions.items():
+                if i == 0:
+                    continue
                 # assumes effect_type is indirect
                 # rep = self.get_representations(intervention.reg_input_ids, position=position)
-                rep = None 
                 
-                dimensions = (self.num_layers + 1, 1)
-                res_base_probs[i] = torch.zeros(dimensions)
+                dimensions = (self.num_layers, 1)
                 res_alt_probs[i] = torch.zeros(dimensions)
                 # res_alt_probs[i] = torch.zeros(dimensions)
-                first_layer = -1
+                # first_layer = -1
+                first_layer = 0
                 for layer in range(first_layer, self.num_layers):
                     neurons = list(range(self.num_neurons))
                     neurons_to_search = [neurons]
                     layers_to_search = [layer]
-
                     probs = self.neuron_intervention(
                         context=context,
-                        res_base_tok=intervention.pred_ids,
-                        res_alt_tok=intervention.label_ids,
-                        rep=rep,
+                        res_alt_tok=intervention.pred_ids,
+                        rep=reps[str(i)][str(layer)],
                         layers=layers_to_search,
                         neurons=neurons_to_search,
                         position=position)
-                    p1, p2 = probs
-                    res_base_probs[i][layer + 1][0] = torch.tensor(p1)
-                    res_alt_probs[i][layer + 1][0] = torch.tensor(p2)
+                    # print(probs)
+                    prob_diff = np.array(base_probs) - np.array(probs)
+                    score = torch.tensor(prob_diff)
+                    res_alt_probs[i][layer][0] = score
                     # res_alt_probs[i][layer + 1][0] = torch.tensor(probs)
-            
-            
-        return distrib_base, distrib_alt, res_base_probs, res_alt_probs
+        return res_alt_probs
 
     def neuron_intervention(self,
                             context,
-                            res_base_tok,
                             res_alt_tok,
                             rep,
                             layers,
@@ -228,14 +220,16 @@ class Model():
                 o = o[0]
             # o = output
             out_device = o.device
-            neurons = torch.LongTensor(neurons).to(out_device)
+            # neurons = torch.LongTensor(neurons).to(out_device)
             # First grab the position across batch
             # Then, for each element, get correct index w/ gather
             # base_slice = (slice(None), position, slice(None))
             # base = o[base_slice].gather(1, neurons)
             base = o[:, position, :]
             noise_tensor = torch.randn(size=base.shape, dtype=base.dtype).to(out_device)
-            base = base + noise_tensor 
+            noise_tensor = noise_tensor * intervention * 3
+            # base = base + noise_tensor
+            base = torch.zeros_like(base)
             # intervention_view = intervention.view_as(base)
             # base = intervention_view
 
@@ -249,14 +243,16 @@ class Model():
             o.masked_scatter_(scatter_mask, base.flatten())
 
         # Set up the context as batch
-        batch_size = len(neurons)
-        context = context.repeat(batch_size, 1)
+        # batch_size = len(neurons)
+        # print(context.shape)
+        # context = context.repeat(batch_size, 1)
+        # print(context.shape)
         handle_list = []
         for layer in set(layers):
             n_list = neurons
             m_list = n_list
             # intervention_rep = rep[layer][m_list]
-            intervention_rep = None 
+            intervention_rep = rep
             if layer == -1:
                 handle_list.append(self.word_emb_layer.register_forward_hook(
                     partial(intervention_hook,
@@ -267,7 +263,6 @@ class Model():
                 if is_attention:
                     module = self.get_attention_layer(layer)
                 else:
-                    
                     module = self.get_neuron_layer(layer)
                 handle_list.append(module.register_forward_hook(
                     partial(intervention_hook,
@@ -275,30 +270,25 @@ class Model():
                             neurons=n_list,
                             intervention=intervention_rep)))
 
-        new_base_probability = self.get_probability_for_example(context, res_base_tok)
         new_alt_probability = self.get_probability_for_example(context, res_alt_tok)
 
-        if type(new_base_probability) is not list:
-            probs = new_base_probability, new_alt_probability
-        else:
-            probs = zip(new_base_probability, new_alt_probability)
 
         for handle in handle_list:
             handle.remove()
         
-        return probs
+        return new_alt_probability
 
 
-    def attention_experiment(self, interventions):
+    def attention_experiment(self, interventions, reps):
         intervention_results = {}
         progress = tqdm(total=len(interventions), desc='performing interventions')
         for idx, intervention in enumerate(interventions):
-            intervention_results[idx] = self.attention_intervention_single_experiment(intervention=intervention)
+            intervention_results[idx] = self.attention_intervention_single_experiment(intervention=intervention, reps=reps)
             progress.update()
 
         return intervention_results
 
-    def attention_intervention_single_experiment(self, intervention, intervention_loc='layer'):
+    def attention_intervention_single_experiment(self, intervention, reps, intervention_loc='layer'):
         """
         Run one full attention intervention experiment
         measuring indirect effect.
@@ -319,11 +309,6 @@ class Model():
             # input = x_alt  # Get attention for x_alt
             # context = x
 
-            distrib_base = self.get_distribution_for_example(intervention.cot_input_ids)
-            distrib_alt = self.get_distribution_for_example(intervention.reg_input_ids)
-            distrib_base = distrib_base.numpy()
-            distrib_alt = distrib_alt.numpy()
-
             context = intervention.cot_input_ids
 
             # positions = list(range(intervention.cot_prompt_len, len(context.squeeze()))) if all_tokens else [-1]
@@ -335,14 +320,14 @@ class Model():
 
             batch_size = 1
             seq_len = len(intervention.cot_input_ids[0])
-            seq_len_alt = len(intervention.reg_input_ids[0])
 
             # positions = list(range(intervention.len_few_shots, len(context.squeeze()))) if all_tokens else [-1]
 
-            res_base_probs = {}
+            base_probs = self.get_probability_for_example(context, intervention.pred_ids)
             res_alt_probs = {}
 
             for i, position in positions.items():
+
                 if intervention_on_output:
                     attention_override = None 
                     # attention_override = self.get_representations(input.unsqueeze(0), position=position,
@@ -390,7 +375,7 @@ class Model():
 
                 elif intervention_loc.startswith('layer'):
                     dimensions = (self.num_layers, 1)
-                    res_base_probs[i] = torch.zeros(dimensions)
+                    # res_base_probs[i] = torch.zeros(dimensions)
                     res_alt_probs[i] = torch.zeros(dimensions)
 
                     for layer in range(self.num_layers):
@@ -398,16 +383,15 @@ class Model():
                             probs = self.neuron_intervention(
                                 # context=context.unsqueeze(0),
                                 context=context,
-                                res_base_tok=intervention.pred_ids,
-                                res_alt_tok=intervention.label_ids,
-                                rep=attention_override,
+                                res_alt_tok=intervention.pred_ids,
+                                rep=reps[str(i)][str(layer)],
                                 layers=[layer],
                                 neurons=[list(range(self.num_neurons))],
                                 position=position,
                                 is_attention=True)
-                            p1, p2 = probs
-                            res_base_probs[i][layer][0] = torch.tensor(p1)
-                            res_alt_probs[i][layer][0] = torch.tensor(p2)
+                            prob_diff = np.array(base_probs) - np.array(probs)
+                            score = torch.tensor(prob_diff)
+                            res_alt_probs[i][layer][0] = score
                         else:
                             layer_attention_override = attention_override[layer]
 
@@ -430,7 +414,7 @@ class Model():
                 else:
                     raise ValueError(f"Invalid intervention_loc: {intervention_loc}")
 
-        return distrib_base, distrib_alt, res_base_probs, res_alt_probs
+        return res_alt_probs
 
     def attention_intervention(self,
                                context,

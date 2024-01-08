@@ -31,6 +31,7 @@ parser.add_argument('--rel', type=str, default='qc')
 parser.add_argument('--reg', action='store_true')
 parser.add_argument('--split', action='store_true')
 parser.add_argument('--direct', action='store_true')
+parser.add_argument('--attn_score', type=str, default='attr')
 args = parser.parse_args()
 
 
@@ -47,6 +48,7 @@ direct = args.direct
 split = args.split
 score = args.score
 rel = args.rel
+attn_score = args.attn_score
 model_path = f'./model/{model_name}'
 cot_file_path  = f'./result/{dataset}/{model_name}_cot_answer_dev_{datalength}.json'
 base_file_path = f'./result/{dataset}/{model_name}_direct_answer_dev_{datalength}.json'
@@ -127,10 +129,9 @@ class Probe():
         wrap_question = cot_prompter.wrap_input(question, icl_cnt=5)
         input_text = wrap_question + cot + '. So the answer is: ' + label
         
-        label_idx = len(tokenizer(wrap_question + cot + '. So the answer is: ', return_tensors="pt").input_ids[0]) - 1
         input_ids = tokenizer(input_text, return_tensors="pt").input_ids
         
-        prompt_len = len(tokenizer(prompt, return_tensors="pt").input_ids[0]) - 1
+        prompt_len = len(tokenizer(prompt, return_tensors="pt").input_ids[0])
         question_len = len(tokenizer(wrap_question, return_tensors="pt").input_ids[0])
         stem = '\n'.join(wrap_question.split('\n')[:-1])
         stem_len = len(tokenizer(stem, return_tensors="pt").input_ids[0])
@@ -138,12 +139,13 @@ class Probe():
         
         labels = torch.full_like(input_ids, -100)
         labels[:, question_len:cot_len] = input_ids[:, question_len:cot_len]
+        # labels[:,question_len:] = input_ids[:,question_len:]
 
         qc_scores = []
-        qa_scores = []
-        ca_scores = []
+        ic_scores = []
         cc_scores = []
-        aa_scores = []
+        pc_scores = []
+        sum_scores = []
         
         loss = None 
         outputs = None 
@@ -189,18 +191,18 @@ class Probe():
                 attn_values = outputs['attentions'][layer]
                 attn_scores = torch.squeeze(attn_values)
                 attn_scores = attn_scores[:, prompt_len:, prompt_len:].sum(axis=0).detach().cpu().numpy()
-               
-            qc_attns = attn_scores[question_len-prompt_len:cot_len-prompt_len, :stem_len-prompt_len].sum() / (len(cot.split('.')))
-            qa_attns = attn_scores[label_idx-prompt_len, :stem_len-prompt_len].sum()
-            ca_attns = attn_scores[label_idx-prompt_len, question_len-prompt_len:cot_len-prompt_len].sum() / (len(cot.split('.')))
-            cc_attns = attn_scores[question_len-prompt_len:cot_len-prompt_len, question_len-prompt_len:cot_len-prompt_len].sum() / (len(cot.split('.')) * len(cot.split('.')))
-            aa_attns = attn_scores[label_idx-prompt_len:, label_idx-prompt_len:].sum() 
+            
+            sum_attns = attn_scores.sum()
+            qc_attns = attn_scores[question_len-prompt_len:cot_len-prompt_len, :stem_len-prompt_len].sum() / ((len(cot.split('.'))))
+            ic_attns = attn_scores[question_len-prompt_len:cot_len-prompt_len, question_len-prompt_len-6:question_len-prompt_len].sum() / ((len(cot.split('.'))))
+            cc_attns = attn_scores[question_len-prompt_len:cot_len-prompt_len, question_len-prompt_len:cot_len-prompt_len].sum() / (len(cot.split('.')))
+            pc_attns = attn_scores[question_len-prompt_len:cot_len-prompt_len, :prompt_len].sum()
             
             qc_scores.append(qc_attns)
-            qa_scores.append(qa_attns)
-            ca_scores.append(ca_attns)
+            ic_scores.append(ic_attns)
             cc_scores.append(cc_attns)
-            aa_scores.append(aa_attns)
+            pc_scores.append(pc_attns)
+            sum_scores.append(sum_attns)
             
             del attn_values
             if score == 'attr':
@@ -213,87 +215,105 @@ class Probe():
         del outputs
         torch.cuda.empty_cache()
         
-        return [qc_scores, qa_scores, ca_scores, cc_scores, aa_scores]
+        return [qc_scores, ic_scores, cc_scores, pc_scores, sum_scores]
     
     def cal_attr_score(self, value, grad, steps=20):
         grad_int = torch.zeros_like(value*grad)
         for i in range(steps):
             k = (i+1) / steps
             grad_int += torch.abs(k * grad) 
-        scores = 1 / steps * value * grad_int
+        scores = 1 / steps * torch.abs(value) * grad_int
         return scores 
     
     
-    def cal_attn(self, question, label, cot, layers, result_path):  
+    def cal_attn(self, question, label, cot, layers, fold_path, score):  
  
         question_len = len(cot_prompter.user_prompt.format(question))
         prompt = cot_prompter.wrap_input(question, icl_cnt=5)[:-question_len]
         wrap_question = cot_prompter.wrap_input(question, icl_cnt=5)
         input_text = wrap_question + cot + '. So the answer is: ' + label
-        label_idx = len(tokenizer(wrap_question + cot + '. So the answer is: ', return_tensors="pt").input_ids[0]) - 1
+        # label_idx = len(tokenizer(wrap_question + cot + '. So the answer is: ', return_tensors="pt").input_ids[0]) - 1
         input_ids = tokenizer(input_text, return_tensors="pt").input_ids.to(model.device)
         prompt_len = len(tokenizer(prompt, return_tensors="pt").input_ids[0]) - 1
 
-        question_len = len(tokenizer(wrap_question, return_tensors="pt").input_ids[0]) - 1
+        question_len = len(tokenizer(wrap_question, return_tensors="pt").input_ids[0])
         cot_len = len(tokenizer(wrap_question + cot, return_tensors="pt").input_ids[0])
         
         labels = torch.full_like(input_ids, -100)
 
-        labels[:, question_len:] = input_ids[:, question_len:]
+        labels[:, question_len:cot_len] = input_ids[:, question_len:cot_len]
 
         # cot_tokens = [input_tokens[-cot_len-1]] + cot_tokens
         # cot_len += 
-        fold_path = result_path + f'_attn_heat_{idx}/'
-        if not os.path.exists(fold_path):
-            os.mkdir(fold_path)
             
         fig_tokens = tokenizer.convert_ids_to_tokens(input_ids[0, prompt_len:])
         y_tokens = fig_tokens[question_len-prompt_len:]
         x_tokens = fig_tokens[:cot_len-prompt_len]
         # print(fig_tokens)
 
-        index = -1
         loss = None 
         outputs = None 
+        idx = -1
+        
+        if score == 'attn':
+            model.eval()
+            outputs = model(
+                input_ids=input_ids.to(model.device),
+                # labels=labels,
+                return_dict=True,
+                output_attentions=True,
+                output_hidden_states=False,
+            )
+            
+        
         for layer in layers:
-            model.train()
-            key = f'model.layers.{layer}'
-            cuda_idx = device_map[key]
-            if cuda_idx != index:
-                index = cuda_idx
-                device = f'cuda:{cuda_idx}'
-                outputs = model(
-                    input_ids=input_ids.to(device),
-                    labels=labels.to(device),
-                    return_dict=True,
-                    output_attentions=True,
-                    output_hidden_states=False,
-                )
-                loss = outputs['loss']
-            attn_values = outputs['attentions'][layer]
-            attn_grad = torch.autograd.grad(loss, attn_values, create_graph=True, allow_unused=True)[0]
-            attn_values = torch.squeeze(attn_values)
-            attn_grad = torch.squeeze(attn_grad)
-            attn_scores = torch.zeros_like(attn_values[0,:,:])
-            for i in range(40):
-                attn_scores += self.cal_attr_score(attn_values[i,:,:], attn_grad[i,:,:])
-            attn_scores = attn_scores[prompt_len:,prompt_len:].detach().cpu().numpy()
+            
+            if score == 'attr':
+                model.train()
+                key = f'model.layers.{layer}'
+                cuda_idx = device_map[key]
+                if cuda_idx != idx:
+                    idx = cuda_idx
+                    device = f'cuda:{cuda_idx}'
+                    outputs = model(
+                        input_ids=input_ids.to(device),
+                        labels=labels.to(device),
+                        return_dict=True,
+                        output_attentions=True,
+                        output_hidden_states=False,
+                    )
+                    loss = outputs['loss']
+                attn_values = outputs['attentions'][layer]
+                attn_grad = torch.autograd.grad(loss, attn_values, create_graph=True, allow_unused=True)[0]
+                attn_values = torch.squeeze(attn_values)
+                attn_grad = torch.squeeze(attn_grad)
+                attn_scores = torch.zeros_like(attn_values[0,:,:])
+                for i in range(40):
+                    attn_scores += self.cal_attr_score(attn_values[i,:,:], attn_grad[i,:,:])
+                attn_scores = attn_scores[prompt_len:,prompt_len:].detach().cpu().numpy()
+            else:
+                attn_values = outputs['attentions'][layer]
+                attn_scores = torch.squeeze(attn_values)
+                attn_scores = attn_scores[:, prompt_len:, prompt_len:].sum(axis=0).detach().cpu().numpy()
+                
             attn_scores = attn_scores[question_len-prompt_len:, :cot_len-prompt_len]
             fig_path = os.path.join(fold_path, f'layer-{layer+1}.pdf')
             draw_attr_heat(attn_scores, x_tokens, y_tokens, fig_path)
             del attn_values
-            del attn_grad 
+            if score == 'attr':
+                del attn_grad 
             del attn_scores
             torch.cuda.empty_cache()
         # fig_path = os.path.join(fold_path, f'layer-scores.pdf')
         # draw_plot(layers, [qc_scores, qa_scores, ca_scores], ['qc', 'qa', 'ca'], fig_path)
-        del loss
+        if score == 'attr':
+            del loss
         del outputs
         torch.cuda.empty_cache()
         return 
     
     
-    def cal_mlp(self, question, label, cot, layers, score=None):
+    def cal_mlp(self, question, label, cot, layers):
 
         question_len = len(cot_prompter.user_prompt.format(question))
         prompt = cot_prompter.wrap_input(question, icl_cnt=5)[:-question_len]
@@ -308,12 +328,9 @@ class Probe():
         cot_len = len(tokenizer(wrap_question + cot, return_tensors="pt").input_ids[0])
         
         labels = torch.full_like(input_ids, -100)
-        if score == 'cot':
-            labels[:, question_len:cot_len] = input_ids[:, question_len:cot_len]
-        elif score == 'label':
-            labels[:, label_idx:] = input_ids[:, label_idx:]
-        else:
-            labels[:, question_len:] = input_ids[:, question_len:]
+        
+        labels[:, question_len:cot_len] = input_ids[:, question_len:cot_len]
+
             
         mlp_scores = []
         # print(fig_tokens)
@@ -546,12 +563,12 @@ if __name__ == '__main__':
    
     if mode == 'C2W':
         if dataset == 'csqa':
-            index = [41,49,158,161,174,219,244,276,283,286,297,386,394,402,413,424,431,441,443,457][:cnt]
+            index = [41,49,158,161,174,219,244,276,283,286,297,386,394,402,413,424,431,441,443,457,523,539,604,652,700,709,754,770,869,881,898,925,929,930,939,946][:cnt]
             # index = [108,119,121,132,201]
         elif dataset == 'wino':
-             index = [40,47,73,175,180,185,197,232,255,266,274][:cnt]
-             
-            #  index = [7,15,50,53,84,97,108,119,121,132,201,207,209,235,253][:cnt]
+            # index = [40,47,73,175,180,185,197,232,255,266,274,306,316,327,333,409,423,427,433,444,454,481,493][:cnt]
+            
+            index = [7,15,50,53,84,97,108,119,121,132,201,207,209,235,253,284,285,307,320,338,342,347,387][:cnt]
     if mode == 'RAND':
         index = random.sample(range(1000), cnt)
         sorted(index)
@@ -638,14 +655,20 @@ if __name__ == '__main__':
             pred_option = f'(' + options[eval(pred)].strip()
             label_option = f'(' + options[eval(label)].strip()
             layers = range(40)
-            pred_scores = probe.cal_attn(question, pred_option, pred_cot, layers, result_path)
-            steps = cots[idx]['answer']
-            reg_cot = steps[eval(label)-1]
-            reg_steps = dataloader.split_cot(reg_cot)
-            reg_cot = '.'.join(reg_steps) 
-            reg_cot = reg_cot.replace(' Reason: ',"")
-            result_path += '-reg'
-            reg_scores = probe.cal_attn(question, label_option, reg_cot, layers, result_path)
+            fold_path = result_path + f'_attn_heat_{idx}/'
+            if not os.path.exists(fold_path):
+                os.mkdir(fold_path)
+            pred_scores = probe.cal_attn(question, pred_option, pred_cot, layers, fold_path, score=attn_score)
+            if reg:
+                steps = cots[idx]['answer']
+                reg_cot = steps[eval(label)-1]
+                reg_steps = dataloader.split_cot(reg_cot)
+                reg_cot = '.'.join(reg_steps) 
+                reg_cot = reg_cot.replace(' Reason: ',"")
+                fold_path = result_path + f'_attn_heat_reg_{idx}/'
+                if not os.path.exists(fold_path):
+                    os.mkdir(fold_path)
+                reg_scores = probe.cal_attn(question, label_option, reg_cot, layers, fold_path, score=attn_score)
         
         elif score == 'attn_diff':
             options = question.split('\n')[-1].split('(')
@@ -659,11 +682,11 @@ if __name__ == '__main__':
             layers = range(40)
 
             if mode == 'W2C':
-                scores = probe.cal_attn_score(question, label_option, label_cot, layers, score='attr')
-                reg_scores = probe.cal_attn_score(question, label_option, reg_cot, layers, score='attr')
+                scores = probe.cal_attn_score(question, label_option, label_cot, layers, score=attn_score)
+                reg_scores = probe.cal_attn_score(question, label_option, reg_cot, layers, score=attn_score)
             else:
-                scores = probe.cal_attn_score(question, pred_option, pred_cot, layers, score='attr')
-                reg_scores = probe.cal_attn_score(question, label_option, reg_cot, layers, score='attr')
+                scores = probe.cal_attn_score(question, pred_option, pred_cot, layers, score=attn_score)
+                reg_scores = probe.cal_attn_score(question, label_option, reg_cot, layers, score=attn_score)
             
             if avg:
                 pred_scores_ls.append(scores)
@@ -689,11 +712,11 @@ if __name__ == '__main__':
                 reg_steps = dataloader.split_cot(reg_cot)
                 reg_cot = '.'.join(reg_steps) 
                 reg_cot = reg_cot.replace(' Reason: ',"")
-                scores = probe.cal_mlp(question, label_option, label_cot, layers, score='label')
-                reg_scores = probe.cal_mlp(question, pred_option, reg_cot, layers, score='label')
+                scores = probe.cal_mlp(question, label_option, label_cot, layers)
+                reg_scores = probe.cal_mlp(question, pred_option, reg_cot, layers)
             else:
-                scores = probe.cal_mlp(question, pred_option, pred_cot, layers, score='label')
-                reg_scores = probe.cal_mlp(question, label_option, reg_cot, layers, score='label')
+                scores = probe.cal_mlp(question, pred_option, pred_cot, layers)
+                reg_scores = probe.cal_mlp(question, label_option, reg_cot, layers)
             
             if avg:
                 pred_scores_ls.append(scores)
@@ -706,11 +729,14 @@ if __name__ == '__main__':
         
     if score == 'llm' and avg:
         probe.llm_avg_score(pred_scores_ls, label_scores_ls, layers, avg, x_range, result_path)
+        
     elif score == 'sim':
         fig_path = result_path + f'_sim.png'
-        draw_line_plot(x_range, scores_ls, fig_path)
+        draw_line_plot(x_range, scores_ls, fig_path)    
+        
     elif score == 'attn_diff' and avg:
-        attn_dic = {'qc':0, 'qa':1, 'ca':2, 'cc':3, 'aa':4}
+        attn_dic = {'qc':0, 'ic':1, 'cc':2, 'pc':3, 'sum':4}
+        
         for rel in attn_dic.keys():
             key = attn_dic[rel]
             scores = np.array(pred_scores_ls)[:, key, :]
@@ -721,31 +747,12 @@ if __name__ == '__main__':
     
             layers = [i+1 for i in range(len(pred_scores_ls[0][0]))]
             labels = [rel, 'reg_'+rel]
-            
+        
+            draw_line_plot(layers, results, labels, fig_path)      
 
-            draw_line_plot(layers, results, labels, fig_path)      
-    elif score == 'attn_diff' and avg:
-        attn_dic = {'qc':0, 'qa':1, 'ca':2, 'cc':3, 'aa':4}
-        
-        for rel in attn_dic.keys():
-            key = attn_dic[rel]
-            scores = np.array(pred_scores_ls)[:, key, :]
-            reg_scores = np.array(reg_scores_ls)[:, key, :]
-            
-            fig_path = result_path + f'_attn_diff_{rel}.pdf'
-            results = np.concatenate((scores, reg_scores), axis=-1).tolist()      
-    
-            layers = [i+1 for i in range(len(pred_scores_ls[0][0]))]
-            labels = [rel, 'reg_'+rel]
-        
-        
-        
-            draw_line_plot(layers, results, labels, fig_path)      
     elif score == 'mlp_diff' and avg:
         scores = np.array(pred_scores_ls)
         reg_scores = np.array(reg_scores_ls)
-        
-        
         
         fig_path = result_path + f'_mlp_diff.pdf'
         results = np.concatenate((scores, reg_scores), axis=-1).tolist()      
