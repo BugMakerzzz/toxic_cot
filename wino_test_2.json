@@ -1,0 +1,245 @@
+[
+    {
+        "question": "The boot was removed from the car tire and put on the truck tire, since the _ was now legally parked.\n(1) car (2) truck ",
+        "answer": [
+            " If a car is legally parked, it means that the car has a valid parking permit or the car has not exceeded the parking time limit. A boot is a device that immobilizes a vehicle's wheel. If the boot is removed from the car tire and put on the truck tire, it means that the car is no longer legally parked. Since the car is no longer legally parked, the boot was removed from the car tire and put on the truck tire. \nSo the answer is: (1) car.</s>",
+            " If a car is legally parked, it means that the car has a valid parking permit or the car has not exceeded the parking time limit. A boot is a device that immobilizes a vehicle's wheel. If the boot is removed from the car tire and put on the truck tire, it means that the car is no longer legally parked. Since the car is no longer legally parked, the boot is now on the truck tire. \nSo the answer is: (2) truck.</s><unk><unk><unk><unk><unk><unk>",
+            " If a car is legally parked, it means that the car has a valid parking permit or the car has not exceeded the parking time limit. A boot is a device that immobilizes a vehicle's wheel. If the boot is removed from the car tire and put on the truck tire, it means that the car is no longer legally parked and the truck is now legally parked. \nSo the answer is: (2) truck.</s><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true,
+        "idx": 54
+    },
+    {
+        "question": "Jennifer thought it was important to neuter a dog and Rachel did not because _ knew lots of animals become homeless.\n(1) Jennifer (2) Rachel ",
+        "answer": [
+            " If a person knows lots of animals become homeless, he may think that neutering a dog is important. Since Jennifer thought it was important to neuter a dog and Rachel did not, Jennifer knew lots of animals become homeless. \nSo the answer is: (1) Jennifer.</s><unk>",
+            " If a person knows lots of animals become homeless, he may think that neutering a dog is important. Since Jennifer thought it was important to neuter a dog and Rachel did not, Jennifer knew lots of animals become homeless. \nSo the answer is: (1) Jennifer. </s>",
+            " If a person knows lots of animals become homeless, he may think that neutering a dog is not important. Since Jennifer thought it was important to neuter a dog and Rachel did not, Rachel knew lots of animals become homeless. \nSo the answer is: (2) Rachel.</s>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true,
+        "idx": 59
+    },
+    {
+        "question": "The stain was darker on Jason's shirt than Donald's because _ spilled red wine and not white wine.\n(1) Jason (2) Donald ",
+        "answer": [
+            " If a person spilled red wine, the stain will be darker than if a person spilled white wine. Since Jason's stain was darker than Donald's, Jason may have spilled red wine and not white wine. \nSo the answer is: (1) Jason. </s><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk>",
+            " If a person spilled red wine, the stain will be darker than if a person spilled white wine. Since Jason's stain was darker than Donald's, Jason may have spilled red wine and not white wine. \nSo the answer is: (1) Jason. </s><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk>",
+            " If a person spilled red wine, the stain will be darker than if a person spilled white wine. Since Jason's stain was darker than Donald's, Jason spilled red wine and not white wine. \nSo the answer is: (1) Jason. \n\nPlease note that the above answer is based on the assumption that red wine will stain more than white wine, which may not always be the case. However, based on the information provided, it is the most likely explanation for why Jason's stain was darker than Donald's.</s>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true,
+        "idx": 62
+    },
+    {
+        "question": "Mary was helping Patricia's daughter put on makeup because _ watches a lot of makeup tutorials.\n(1) Mary (2) Patricia ",
+        "answer": [
+            " If a person watches a lot of makeup tutorials, he may know how to put on makeup. Since Mary was helping  Putricia's daughter put on makeup, Mary watches a lot of makeup tutorials. \nSo the answer is: (1) Mary. \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+            " If a person watches a lot of makeup tutorials, he may know how to put on makeup. Since Mary was helping  Putricia's daughter put on makeup, Mary watches a lot of makeup tutorials. \nSo the answer is: (1) Mary. \n\n\n\nPlease let me know if you have any other questions.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+            " If a person watches a lot of makeup tutorials, he may know how to put on makeup. Since Mary was helping  Putricia's daughter put on makeup, Mary watches a lot of makeup tutorials. \nSo the answer is: (1) Mary. \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n</s>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true,
+        "idx": 65
+    },
+    {
+        "question": "Mary goes around telling everyone that Christine is too clingy because _ likes  to be touched..\n(1) Mary (2) Christine ",
+        "answer": [
+            " If someone likes to be touched, they may be seen as clingy. If Mary goes around telling everyone that Christine is too clingy, it means that Christine likes to be touched a lot. \nSo the answer is: (2) Christine.</s>",
+            " If someone likes to be touched, they may be seen as clingy. If Mary goes around telling everyone that Christine is too clingy, it means that Christine likes to be touched a lot. \nSo the answer is: (2) Christine.</s>",
+            " If someone likes to be touched, they may be seen as clingy. If Mary goes around telling everyone that Christine is too clingy, it means that Christine likes to be touched a lot. \nSo the answer is: (2) Christine.</s>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true,
+        "idx": 71
+    },
+    {
+        "question": "Derrick always wanted to wash when they woke up but Benjamin rarely bothered. _ was a very dirty person.\n(1) Derrick (2) Benjamin ",
+        "answer": [
+            " If a person always wanted to wash when they woke up, they may be a very clean person. If a person rarely bothered to wash, they may be a very dirty person. Since Derrick always wanted to wash when they woke up and Benjamin rarely bothered, Benjamin was a very dirty person. \nSo the answer is: (2) Benjamin. </s>",
+            " If a person always wanted to wash when they woke up, they may be a very clean person. If a person rarely bothered to wash, they may be a very dirty person. Since Derrick always wanted to wash when they woke up and Benjamin rarely bothered, Benjamin was a very dirty person. \nSo the answer is: (2) Benjamin. </s>",
+            " If a person always wanted to wash when they woke up, they may be a very clean person. If a person rarely bothered to wash, they may be a very dirty person. Since Derrick always wanted to wash when they woke up and Benjamin rarely bothered, Benjamin was a very dirty person. \nSo the answer is: (2) Benjamin. </s>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true,
+        "idx": 73
+    },
+    {
+        "question": "Angela loved to wear sun glasses but Jessica didn't. _ bought a fancy new pair of shoes.\n(1) Angela (2) Jessica ",
+        "answer": [
+            " If a person loved to wear sun glasses, he may buy a fancy new pair of shoes. If a person did not like to wear sun glasses, he may not buy a fancy new pair of shoes. Since Angela loved to wear sun glasses, she may buy a fancy new pair of shoes. \nSo the answer is: (1) Angela. </s><unk><unk><unk><unk><unk><unk><unk><unk><unk>",
+            " If a person loved to wear sun glasses, he may buy a fancy new pair of shoes. If a person did not like to wear sun glasses, he may not buy a fancy new pair of shoes. Since Angela loved to wear sun glasses and bought a fancy new pair of shoes, the answer is: (1) Angela. \n\nSo the answer is: (1) Angela. </s>",
+            " If a person loved to wear sun glasses, he may buy a fancy new pair of shoes. If a person did not like to wear sun glasses, he may not buy a fancy new pair of shoes. Since Angela loved to wear sun glasses and bought a fancy new pair of shoes, the answer is: (1) Angela. \n\nSo the answer is: (1) Angela. </s>"
+        ],
+        "pred": "1",
+        "label": "2",
+        "cor_flag": false,
+        "idx": 76
+    },
+    {
+        "question": "The bird squawked at Mary's rushed approached and quieted when Jennifer came in since _ was threatening.\n(1) Mary (2) Jennifer ",
+        "answer": [
+            " If a bird is threatening, it may be seen as dangerous. If a person is threatened, he may be quiet. If a bird is quieted, it may be seen as calm. Since the bird was threatening and quieted when Jennifer came in, the bird was threatened by Mary's rushed approach. \nSo the answer is: (1) Mary. \n\nPlease note that the word \"rushed approach\" implies that Mary approached the bird quickly and suddenly, which may have caused the bird to feel threatened.</s>",
+            " If a bird is threatening, it may be seen as dangerous. If a person is threatened, he may be quiet. If a bird is quieted, it may be seen as calm. Since the bird was threatening and quieted when Jennifer came in, the bird was threatened by Mary's rushed approach. \nSo the answer is: (1) Mary. \n\nPlease note that the word \"rushed approach\" implies that Mary approached the bird quickly and suddenly, which may have threatened the bird.</s><unk><unk><unk>",
+            " If a bird is threatening, it may be seen as dangerous. If a person is threatened, he may be quiet. If a bird is quieted, it means the bird is silent. Since the bird was threatening and quieted when Jennifer came in, the bird may have been threatened by Mary's rushed approach. \nSo the answer is: (1) Mary. </s><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true,
+        "idx": 77
+    },
+    {
+        "question": "Ben had to drain both water and oil down the sink, but the _ was too viscous.\n(1) oil (2) water ",
+        "answer": [
+            " If a liquid is too viscous, it means that it is difficult to drain. If Ben had to drain both water and oil down the sink, but the oil was too viscous, it means that the oil is difficult to drain. \nSo the answer is: (1) oil. </s>",
+            " If a liquid is too viscous, it means that it is difficult to drain. If Ben had to drain both water and oil down the sink, but the oil was too viscous, it means that the oil is difficult to drain. \nSo the answer is: (1) oil. </s>",
+            " If a liquid is too viscous, it means that it is difficult to drain. If Ben had to drain both water and oil down the sink, but the oil was too viscous, it means that the oil is difficult to drain. \nSo the answer is: (1) oil. </s>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true,
+        "idx": 79
+    },
+    {
+        "question": "Rachel wanted children, but Megan had no interest, so _ looked for someone else to have freedom with.\n(1) Rachel (2) Megan ",
+        "answer": [
+            " If someone looks for someone else to have freedom with, it means that they want to be free from the responsibility of taking care of children. If someone has no interest in having children, they will not look for someone else to have freedom with. Since Rachel wanted children but Megan had no interest, Megan will not look for someone else to have freedom with. \nSo the answer is: (1) Rachel.</s>",
+            " If someone looks for someone else to have freedom with, it means they want to be free from the responsibility of taking care of children. If someone has no interest in having children, they will not look for someone else to have freedom with. Since Rachel wanted children but Megan had no interest, Megan will not look for someone else to have freedom with. \nSo the answer is: (1) Rachel.</s><unk>",
+            " If someone looks for someone else to have freedom with, it means that they want to be free from the responsibility of taking care of children. If someone has no interest in having children, they may look for someone else to have freedom with. Since Rachel wanted children but Megan had no interest, Megan looked for someone else to have freedom with. \nSo the answer is: (2) Megan.</s><unk><unk><unk>"
+        ],
+        "pred": "1",
+        "label": "2",
+        "cor_flag": false,
+        "idx": 80
+    },
+    {
+        "question": "The sheet recovered can easily be hiding between the space in the door. The _ is thin.\n(1) sheet (2) space ",
+        "answer": [
+            " If a sheet is recovered, it may be thin. A sheet is a piece of fabric used as bedding. If a sheet is thin, it may be easy to hide it between the space in the door. Since the sheet is thin, it can easily be hiding between the space in the door. \nSo the answer is: (1) sheet.</s>",
+            " If a sheet is recovered, it may be thin. A sheet is a piece of fabric used as bedding. A space is an empty area. Since the sheet recovered can easily be hiding between the space in the door, the sheet is thin. \nSo the answer is: (1) sheet.</s><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk>",
+            " If a sheet is recovered, it may be thin. A sheet is a piece of cloth used as bedding. A space is an empty area. Since the sheet recovered can easily be hiding between the space in the door, the sheet is thin. \nSo the answer is: (1) sheet.</s><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk><unk>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true,
+        "idx": 81
+    },
+    {
+        "question": "The wooden doors at my friends work are worse than the wooden desks at my work, because the _ material is stronger.\n(1) doors (2) desks ",
+        "answer": [
+            " If the wooden doors are worse than wooden desks, it means the wooden doors are weaker. A stronger material is one that can withstand more force or pressure without breaking or being damaged. Since the wooden doors are weaker than the wooden desks, the material of the desks is stronger. \nSo the answer is: (2) desks.</s>",
+            " If the wooden doors are worse than wooden desks, it means the wooden doors are weaker. A stronger material is one that can withstand more force or pressure without breaking or being damaged. Since the wooden doors are weaker than the wooden desks, the material of the desks is stronger. \nSo the answer is: (2) desks.</s>",
+            " If the wooden doors are worse than wooden desks, it means the wooden doors are weaker. A stronger material is one that can withstand more force or pressure without breaking or failing. Since the wooden doors are weaker than the wooden desks, the material of the desks is stronger. \nSo the answer is: (2) desks.</s><unk><unk>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true,
+        "idx": 84
+    },
+    {
+        "question": "The dog was more suspicious of the locker than of the package because the drugs were in the _ .\n(1) locker (2) package ",
+        "answer": [
+            " If a person is more suspicious of a place rather than an object, it means that the place may have something illegal. A dog may be more suspicious of a locker rather than a package because the drugs were in the locker. \nSo the answer is: (1) locker. </s>",
+            " If a person is more suspicious of a place rather than an object, it means that the place may have something illegal. A dog may be more suspicious of a locker rather than a package because the drugs were in the locker. \nSo the answer is: (1) locker. </s>",
+            " If a person is more suspicious of a place rather than an object, it means that the place may have something illegal. A dog may be more suspicious of a locker rather than a package because the drugs were in the locker. \nSo the answer is: (1) locker.</s><unk>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true,
+        "idx": 85
+    },
+    {
+        "question": "The stain in the bucket could not be cleaned with the brush because the _ is tough.\n(1) stain (2) brush ",
+        "answer": [
+            " If a stain cannot be cleaned with a brush, the stain is tough. A tough stain is difficult to remove. Since the stain in the bucket could not be cleaned with the brush, the stain is tough. \nSo the answer is: (1) stain.</s>",
+            " If a stain cannot be cleaned with a brush, the stain is tough. A tough stain is difficult to remove. Since the stain in the bucket could not be cleaned with the brush, the stain is tough. \nSo the answer is: (1) stain.</s>",
+            " If a stain cannot be cleaned with a brush, the stain is tough. A tough stain is difficult to remove. Since the stain in the bucket could not be cleaned with the brush, the stain is tough.\nSo the answer is: (1) stain.</s><unk>"
+        ],
+        "pred": "1",
+        "label": "1",
+        "cor_flag": true,
+        "idx": 89
+    },
+    {
+        "question": "Fiction books were interesting and easy to read for  Logan but not Brett because _ enjoyed real tales.\n(1) Logan (2) Brett ",
+        "answer": [
+            " If a person enjoys real tales, he likes to read non-fiction books. Since fiction books were interesting and easy to read for Logan but not for Brett, Brett likes to read non-fiction books. \nSo the answer is: (2) Brett. </s>",
+            " If a person enjoys real tales, he likes to read non-fiction books. Since fiction books were interesting and easy to read for Logan but not for Brett, Brett likes to read non-fiction books. \nSo the answer is: (2) Brett. </s>",
+            " If a person enjoys real tales, he likes to read non-fiction books. Since fiction books were interesting and easy to read for Logan but not for Brett, Brett prefers to read non-fiction books. \nSo the answer is: (2) Brett. </s>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true,
+        "idx": 91
+    },
+    {
+        "question": "During the rescue mission, Maria pulled Rebecca away from the minefield since _ was a civilian.\n(1) Maria (2) Rebecca ",
+        "answer": [
+            " If a person is a civilian, he or she does not work in the military. Since Maria pulled Rebecca away from the minefield, Rebecca is a civilian. \nSo the answer is: (2) Rebecca. </s><unk>",
+            " If a person is a civilian, he or she does not work in the military. Since Maria pulled Rebecca away from the minefield, Rebecca is a civilian. \nSo the answer is: (2) Rebecca. </s><unk>",
+            " If a person is a civilian, he or she does not participate in the military. Since Maria pulled Rebecca away from the minefield, Rebecca is a civilian. \nSo the answer is: (2) Rebecca. </s>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true,
+        "idx": 97
+    },
+    {
+        "question": "More people attended the funeral of Joel than of Derrick because _ was a mean person.\n(1) Joel (2) Derrick ",
+        "answer": [
+            " If a person is a mean person, people may not want to attend his funeral. If more people attended the funeral of Joel than of Derrick, it means that Joel was not a mean person. \nSo the answer is: (1) Joel. </s>",
+            " If a person is a mean person, people may not want to attend his funeral. If more people attended the funeral of Joel than of Derrick, it means that Joel was not a mean person. \nSo the answer is: (1) Joel.</s><unk>",
+            " If a person is a mean person, people may not like to attend his funeral. If more people attended the funeral of Joel than of Derrick, it means that Joel was not a mean person. \nSo the answer is: (1) Joel.</s><unk>"
+        ],
+        "pred": "1",
+        "label": "2",
+        "cor_flag": false,
+        "idx": 100
+    },
+    {
+        "question": "The teenager chose a jeweled pin for her belly piercing, but the _ was too huge.\n(1) piercing (2) pin ",
+        "answer": [
+            " A jeweled pin is a type of decoration for a belly piercing. If the pin is too huge, it may not be suitable for the piercing. Since the teenager chose a jeweled pin for her belly piercing but the pin was too huge, the answer is: (1) piercing.</s>",
+            " A jeweled pin is a type of decoration for a belly piercing. If the pin is too huge, it may not be suitable for the piercing. Since the teenager chose a jeweled pin for her belly piercing but the pin was too huge, the answer is: (1) piercing.</s>",
+            " A jeweled pin is a type of decoration for a belly piercing. If the pin is too huge, it may not fit the piercing. Since the teenager chose a jeweled pin for her belly piercing but the pin was too huge, the answer is: (1) piercing.</s><unk><unk>"
+        ],
+        "pred": "1",
+        "label": "2",
+        "cor_flag": false,
+        "idx": 108
+    },
+    {
+        "question": "Jennifer returned the pan to Sarah because _ had loaned it to her for the potluck party.\n(1) Jennifer (2) Sarah ",
+        "answer": [
+            " If someone loaned something to another person, it means that the owner of the thing lent it to the other person. If someone returns something to the owner, it means that the person who borrowed the thing returned it back to the owner. Since Jennifer returned the pan to Sarah, Sarah loaned the pan to Jennifer for the potluck party. \nSo the answer is: (2) Sarah.</s>",
+            " If someone loaned something to another person, it means that the owner of the thing lent it to the other person. If someone returns something to the owner, it means that the person who borrowed the thing returned it back to the owner. Since Jennifer returned the pan to Sarah, Sarah loaned the pan to Jennifer for the potluck party. \nSo the answer is: (2) Sarah.</s>",
+            " If someone loaned something to another person, it means that the owner of the thing lent it to the other person. If someone returns something to the owner, it means that the person who borrowed it returned it back to the owner. Since Jennifer returned the pan to Sarah, Sarah loaned the pan to Jennifer for the potluck party. \nSo the answer is: (2) Sarah.</s><unk>"
+        ],
+        "pred": "2",
+        "label": "2",
+        "cor_flag": true,
+        "idx": 113
+    },
+    {
+        "question": "So _ ignored drinking milk from the bottle because Rachel was thirsty and Erin already drank some water.\n(1) Rachel (2) Erin ",
+        "answer": [
+            " If someone is thirsty, he may want to drink something. If someone already drank something, he may not want to drink again. If someone ignored drinking milk from the bottle, he may not want to drink milk. Since Rachel was thirsty and Erin already drank some water, Rachel tended to ignore drinking milk from the bottle. \nSo the answer is: (1) Rachel.</s>",
+            " If someone is thirsty, he may want to drink something. If someone already drank something, he may not want to drink again. If someone ignored drinking milk from the bottle, he may not want to drink milk. Since Rachel was thirsty and Erin already drank some water, Rachel tended to ignore drinking milk from the bottle. \nSo the answer is: (1) Rachel.</s>",
+            " If someone is thirsty, he may want to drink something. If someone already drank something, he may not want to drink again. If someone ignored drinking milk from the bottle, he may not want to drink milk. Since Rachel was thirsty and Erin already drank some water, Rachel tended to ignore drinking milk from the bottle. \nSo the answer is: (1) Rachel.</s>"
+        ],
+        "pred": "1",
+        "label": "2",
+        "cor_flag": false,
+        "idx": 114
+    },
+    {
+        "acc": 0.75
+    }
+]

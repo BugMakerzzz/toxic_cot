@@ -36,19 +36,16 @@ def draw_acc(layers, scores, label, path):
     plt.savefig(path)
     plt.close()
 
-def draw_heat(layers, index, scores, path):
+def draw_heat(layers, index, scores, path, exp):
     sns.set()
-    # if type == 'std':
-    #     vmin = 0
-    #     vmax = 10
-    #     center = 5
-    # elif type == 'mean':
-    #     vmin = -10
-    #     vmax = 10
-    #     center = 0
-    ax=sns.heatmap(scores, cmap="RdBu_r", center=0, xticklabels=layers, yticklabels=index)
+    if exp == 'attn':
+        ax=sns.heatmap(scores, cmap="RdBu_r", center=0, vmin=0, vmax=0.4, xticklabels=layers, yticklabels=index)
+    elif exp == 'mlp':
+        ax=sns.heatmap(scores, cmap="BrBG", center=0, vmin=0, vmax=0.4, xticklabels=layers, yticklabels=index)
+    else:
+        return 
     # ax=sns.heatmap(scores, cmap="RdBu_r", xticklabels=layers, yticklabels=index)
-    plt.xticks(size = 4)
+    plt.xticks(size = 6)
     plt.savefig(path)
     plt.close()
   
@@ -58,13 +55,13 @@ def draw_line_plot(x_range, results, labels, path):
     scores = []
     tags = []
     for i in range(len(results)):
-        scores += results[i]
+        scores += list(results[i])
         layers += x_range * len(labels)
         for i in range(len(labels)): 
             tags += [labels[i]] * len(x_range)
-
     data_plot = pd.DataFrame({"layers":layers, "scores":scores, "tags":tags})
     sns.lineplot(x = "layers", y = "scores", hue='tags', data=data_plot)
+    plt.axhline(0, linestyle='--')
     plt.savefig(path)
     plt.close()
 # # def extrat_gsm8k(text):

@@ -194,7 +194,7 @@ class Model():
                         position=position)
                     # print(probs)
                     prob_diff = np.array(base_probs) - np.array(probs)
-                    score = torch.tensor(prob_diff)
+                    score = torch.tensor(prob_diff / np.array(base_probs))
                     res_alt_probs[i][layer][0] = score
                     # res_alt_probs[i][layer + 1][0] = torch.tensor(probs)
         return res_alt_probs
@@ -228,8 +228,8 @@ class Model():
             base = o[:, position, :]
             noise_tensor = torch.randn(size=base.shape, dtype=base.dtype).to(out_device)
             noise_tensor = noise_tensor * intervention * 3
-            # base = base + noise_tensor
-            base = torch.zeros_like(base)
+            base = base + noise_tensor
+            # base = torch.zeros_like(base)
             # intervention_view = intervention.view_as(base)
             # base = intervention_view
 
@@ -390,7 +390,7 @@ class Model():
                                 position=position,
                                 is_attention=True)
                             prob_diff = np.array(base_probs) - np.array(probs)
-                            score = torch.tensor(prob_diff)
+                            score = torch.tensor(prob_diff / np.array(base_probs))
                             res_alt_probs[i][layer][0] = score
                         else:
                             layer_attention_override = attention_override[layer]

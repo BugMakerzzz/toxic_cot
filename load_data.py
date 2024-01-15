@@ -223,6 +223,8 @@ class CoTLoader():
             index = index[:cnt]
         data = []
         for idx in index:
+            if idx >= len(full_cot_data):
+                break
             question = full_cot_data[idx]['question']
             cot = full_cot_data[idx]['answer']
             cots = self.split_cot(cot)
