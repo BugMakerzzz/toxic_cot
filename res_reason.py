@@ -7,7 +7,7 @@ import numpy as np
 from tqdm import tqdm
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, AutoModelForSeq2SeqLM
 from prompts.wrap_prompt import LlamaPrompter
-from load_data import DataLoader
+from load_data import DataLoader, CoTLoader
 from transformers.generation.stopping_criteria import StoppingCriteria, StoppingCriteriaList
 
 
@@ -43,7 +43,7 @@ test = args.test
 
 model_path = f'./model/{model_name}'
 result_path = f'./result/{dataset}/res_result_{strategy}_{datalength}_s{scale_factor}_w{penalty_weights}_c{num_attn_candidates}_r{res}_t{test}.json'
-cot_file_path  = f'./result/{dataset}/{model_name}_cot_answer_dev_2000.json'
+cot_file_path  = f'./result/{dataset}/{model_name}_cot_answer_dev_2000_greedy.json'
 base_file_path = f'./result/{dataset}/{model_name}_direct_answer_dev_2000.json'
 
 model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16, trust_remote_code=True, device_map='auto')
@@ -75,13 +75,17 @@ if dataset == 'csqa':
     index1 = index1[:10]
     index2 = index2[:10]
     index = index1 + index2
-else:
+elif dataset == 'wino':
     index1 = [1, 2, 20, 22, 23, 32, 34, 38, 42, 46, 54, 59, 62, 65, 77, 79, 81, 85, 89, 91, 96, 99, 101, 103, 104, 112, 122, 124, 127, 142, 144, 145, 170, 179, 182, 190, 191, 198, 205, 210, 212, 213, 215, 229, 239, 243, 247, 256, 265, 276, 279, 283, 291, 294, 297, 303, 311, 328, 335, 348, 349, 353, 356, 358, 360, 370, 371, 372, 379, 380, 384, 388, 401, 405, 414, 435, 437, 441, 442, 443, 452, 458, 462, 464, 470, 474, 484, 491, 505, 507, 509, 510, 513, 514, 517, 520, 523, 528, 532, 534, 544, 550, 554, 555, 564, 566, 576, 585, 591, 603, 606, 617, 621, 623, 629, 633, 639, 641, 644, 648, 655, 663, 665, 667, 672, 681, 685, 688, 691, 697, 702, 707, 719, 743, 744, 747, 748, 750, 763, 767, 778, 790, 803, 816, 820, 825, 826, 829, 830, 840, 841, 843, 853, 856, 871, 875, 876, 880, 889, 891, 897, 899, 901, 902, 904, 907, 909, 910, 914, 915, 921, 933, 941, 942, 944, 948, 956, 958, 965, 972, 974, 980, 993]
     index2 = [7, 15, 50, 53, 97, 108, 119, 121, 132, 201, 207, 209, 235, 253, 284, 285, 307, 316, 320, 338, 342, 347, 387, 390, 426]
     index1 = index1[:10]
     index2 = index2[:10]
     index = index1 + index2
-
+else:
+    indexloader = CoTLoader()
+    _, index1 = indexloader.load_data(cot_file_path, base_file_path, mode='C2W', cnt=10)
+    _, index2 = indexloader.load_data(cot_file_path, base_file_path, mode='W2C', cnt=10)
+    index = index1 + index2
 
 def res_inference(question):
     with torch.no_grad():
@@ -176,11 +180,11 @@ max_index = -1
 idx = 0
 weight_ls = []
 max_results = []
-scale_ls = [30,40,50,60,70,80,90] if dataset == 'wino' else [100,90,80,70,60,50,40]
+# scale_ls = [30,40,50,60,70,80,90] if dataset == 'wino' else [100,90,80,70,60,50,40]
 
-for scale_factor in scale_ls:
-    for penalty_weights in [0.5, 1.0, 1.5, 2.0]:
-        for num_attn_candidates in range(2, 11):
+for scale_factor in [100,110]:
+    for penalty_weights in [1.5, 2.0]:
+        for num_attn_candidates in range(5, 11):
             config = {'s':scale_factor, 'p':penalty_weights, 'n':num_attn_candidates}
             weight_ls.append(config)
             print(config)
@@ -211,7 +215,7 @@ for scale_factor in scale_ls:
                 torch.cuda.empty_cache()
 
             acc = correct / cnt
-            # print(f'Acc: {acc}')
+            print(f'Acc: {acc}')
             if acc > max_acc:
                 max_acc = acc
                 max_index = idx

@@ -136,7 +136,7 @@ results = []
 for data in tqdm(dataloader):
     question = data['question']
     label = data['label']
-    idx = dataloader.idx - 1
+    # idx = dataloader.idx - 1 
     result, pred = model_generate(question, strategy)
     cor_flag = (pred == label)
     cnt += 1

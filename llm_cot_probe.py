@@ -21,7 +21,6 @@ random.seed(17)
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='Llama-2-13b-chat-hf')
 parser.add_argument('--dataset', type=str, default='wino')
-parser.add_argument('--datalength', type=int, default=1000)
 parser.add_argument('--mode', type=str, default=None)
 parser.add_argument('--score', type=str, default=None)
 parser.add_argument('--diff_cot', type=str, default=None)
@@ -32,12 +31,12 @@ parser.add_argument('--reg', action='store_true')
 parser.add_argument('--split', action='store_true')
 parser.add_argument('--direct', action='store_true')
 parser.add_argument('--loss', type=str, default='cot')
+parser.add_argument('--diff', action='store_true')
 args = parser.parse_args()
 
 
 model_name = args.model
 dataset = args.dataset
-datalength = args.datalength
 mode = args.mode
 diff_logits = args.diff_logits
 diff_cot = args.diff_cot
@@ -48,18 +47,20 @@ direct = args.direct
 split = args.split
 score = args.score
 loss_type = args.loss
+diff = args.diff
 model_path = f'./model/{model_name}'
-cot_file_path  = f'./result/{dataset}/{model_name}_cot_answer_dev_{datalength}.json'
-base_file_path = f'./result/{dataset}/{model_name}_direct_answer_dev_{datalength}.json'
+cot_file_path  = f'./result/{dataset}/{model_name}_cot_answer_dev_2000_greedy.json'
+base_file_path = f'./result/{dataset}/{model_name}_direct_answer_dev_2000.json'
 result_path = f'./result/{dataset}/fig/{model_name}_s-{score}_m-{mode}_c-{cnt}_r-{reg}_l-{loss_type}'
 full_cot_path = f'./result/{dataset}/{model_name}_cot_dev_1000.json'
 
 
 # device_map = {'model.embed_tokens': 0, 'model.layers.0': 0, 'model.layers.1': 3, 'model.layers.2': 3, 'model.layers.3': 3, 'model.layers.4': 2, 'model.layers.5': 1, 'model.layers.6': 0, 'model.layers.7': 0, 'model.layers.8': 0, 'model.layers.9': 0, 'model.layers.10': 1, 'model.layers.11': 1, 'model.layers.12': 1, 'model.layers.13': 1, 'model.layers.14': 1, 'model.layers.15': 1, 'model.layers.16': 1, 'model.layers.17': 1, 'model.layers.18': 1, 'model.layers.19': 0, 'model.layers.20': 2, 'model.layers.21': 2, 'model.layers.22': 2, 'model.layers.23': 2, 'model.layers.24': 2, 'model.layers.25': 2, 'model.layers.26': 2, 'model.layers.27': 2, 'model.layers.28': 2, 'model.layers.29': 0, 'model.layers.30': 2, 'model.layers.31': 3, 'model.layers.32': 3, 'model.layers.33': 3, 'model.layers.34': 0, 'model.layers.35': 3, 'model.layers.36': 3, 'model.layers.37': 3, 'model.layers.38': 0, 'model.layers.39': 0, 'model.norm': 3, 'lm_head': 3}
-device_map = {'model.embed_tokens': 0, 'model.layers.0': 0, 'model.layers.1': 0, 'model.layers.2': 0, 'model.layers.3': 0, 'model.layers.4': 0, 'model.layers.5': 0, 'model.layers.6': 0, 'model.layers.7': 0, 'model.layers.8': 0, 'model.layers.9': 0, 'model.layers.10': 1, 'model.layers.11': 1, 'model.layers.12': 1, 'model.layers.13': 1, 'model.layers.14': 1, 'model.layers.15': 1, 'model.layers.16': 1, 'model.layers.17': 1, 'model.layers.18': 1, 'model.layers.19': 1, 'model.layers.20': 2, 'model.layers.21': 2, 'model.layers.22': 2, 'model.layers.23': 2, 'model.layers.24': 2, 'model.layers.25': 2, 'model.layers.26': 2, 'model.layers.27': 2, 'model.layers.28': 2, 'model.layers.29': 2, 'model.layers.30': 2, 'model.layers.31': 3, 'model.layers.32': 3, 'model.layers.33': 3, 'model.layers.34': 3, 'model.layers.35': 3, 'model.layers.36': 3, 'model.layers.37': 3, 'model.layers.38': 3, 'model.layers.39': 3, 'model.norm': 3, 'lm_head': 3}
-device_num = len(os.environ["CUDA_VISIBLE_DEVICES"].split(','))
+# device_map = {'model.embed_tokens': 0, 'model.layers.0': 0, 'model.layers.1': 0, 'model.layers.2': 0, 'model.layers.3': 0, 'model.layers.4': 0, 'model.layers.5': 0, 'model.layers.6': 0, 'model.layers.7': 0, 'model.layers.8': 0, 'model.layers.9': 0, 'model.layers.10': 1, 'model.layers.11': 1, 'model.layers.12': 1, 'model.layers.13': 1, 'model.layers.14': 1, 'model.layers.15': 1, 'model.layers.16': 1, 'model.layers.17': 1, 'model.layers.18': 1, 'model.layers.19': 1, 'model.layers.20': 2, 'model.layers.21': 2, 'model.layers.22': 2, 'model.layers.23': 2, 'model.layers.24': 2, 'model.layers.25': 2, 'model.layers.26': 2, 'model.layers.27': 2, 'model.layers.28': 2, 'model.layers.29': 2, 'model.layers.30': 2, 'model.layers.31': 3, 'model.layers.32': 3, 'model.layers.33': 3, 'model.layers.34': 3, 'model.layers.35': 3, 'model.layers.36': 3, 'model.layers.37': 3, 'model.layers.38': 3, 'model.layers.39': 3, 'model.norm': 3, 'lm_head': 3}
+# device_num = len(os.environ["CUDA_VISIBLE_DEVICES"].split(','))
 
-model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16, trust_remote_code=True, device_map=device_map)
+model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16, trust_remote_code=True, device_map='auto')
+device_map = model.hf_device_map
 # model = accelerator.prepare_model(model)
 # config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
 # with init_empty_weights():
@@ -144,7 +145,7 @@ class Probe():
             input_text = wrap_question + cot + f' So the answer is: {(label)}' 
         input_ids = tokenizer(input_text, return_tensors="pt").input_ids
         
-        prompt_len = len(tokenizer(prompt, return_tensors="pt").input_ids[0])
+        prompt_len = len(tokenizer(prompt, return_tensors="pt").input_ids[0]) - 1
         question_len = len(tokenizer(wrap_question, return_tensors="pt").input_ids[0])
         stem = '\n'.join(wrap_question.split('\n')[:-1])
         stem_len = len(tokenizer(stem, return_tensors="pt").input_ids[0])
@@ -223,50 +224,42 @@ class Probe():
         return torch.abs(scores) 
     
     
-    def cal_attn(self, question, label, cot, layers, fold_path):  
- 
+    def cal_attn(self, question, label, cot, layers):  
         question_len = len(cot_prompter.user_prompt.format(question))
         prompt = cot_prompter.wrap_input(question, icl_cnt=5)[:-question_len]
         wrap_question = cot_prompter.wrap_input(question, icl_cnt=5)
         input_text = wrap_question + cot + f' So the answer is: ({label})'
         input_ids = tokenizer(input_text, return_tensors="pt").input_ids.to(model.device)
         prompt_len = len(tokenizer(prompt, return_tensors="pt").input_ids[0]) - 1
-
+        stem = '\n'.join(wrap_question.split('\n')[:-1])
+        stem_len = len(tokenizer(stem, return_tensors="pt").input_ids[0])
         question_len = len(tokenizer(wrap_question, return_tensors="pt").input_ids[0])
         cot_len = len(tokenizer(wrap_question + cot, return_tensors="pt").input_ids[0])
         
-            
-        fig_tokens = tokenizer.convert_ids_to_tokens(input_ids[0, prompt_len:])
-        y_tokens = fig_tokens[question_len-prompt_len:]
-        x_tokens = fig_tokens[:cot_len-prompt_len]
-        # print(fig_tokens)
 
-        outputs = None 
-        
         model.eval()
         outputs = model(
             input_ids=input_ids.to(model.device),
-
             return_dict=True,
             output_attentions=True,
             output_hidden_states=False,
         )
-            
+        
+        scores = []
         for layer in layers:
             attn_values = outputs['attentions'][layer]
-            attn_scores = torch.squeeze(attn_values)
-            attn_scores = attn_scores[:, prompt_len:, prompt_len:].sum(axis=0).detach().cpu().numpy()
-                
-            attn_scores = attn_scores[question_len-prompt_len:, :cot_len-prompt_len]
-            fig_path = os.path.join(fold_path, f'layer-{layer+1}.pdf')
-            draw_attr_heat(attn_scores, x_tokens, y_tokens, fig_path)
+            attn_values = torch.squeeze(attn_values)
+            attn_scores = attn_values[:, prompt_len:, prompt_len:].detach().cpu().numpy()  
+            attn_scores = attn_scores[:, question_len-prompt_len:cot_len-prompt_len, :stem_len-prompt_len].sum(axis=-1).sum(axis=-1)
+            # fig_path = os.path.join(fold_path, f'layer-{layer+1}.pdf')
+            # draw_attr_heat(attn_scores, x_tokens, y_tokens, fig_path)
+            scores.append(attn_scores)
             del attn_values
-            del attn_scores
             torch.cuda.empty_cache()
-
+            print(attn_scores)
         del outputs
         torch.cuda.empty_cache()
-        return 
+        return scores
     
     
     def cal_mlp_attr(self, question, label, cot, layers, loss='cot'):
@@ -472,10 +465,10 @@ class Probe():
             label_scores_ls = []
             layers = range(0,41)
             x_range = layers
-        elif score in ['sim', 'attn', 'mlp']:
+        elif score in ['sim','mlp']:
             scores_ls = []
             x_range = []
-        elif score in ['attn_attr', 'mlp_attr']:
+        elif score in ['attn_attr', 'mlp_attr', 'attn']:
             pred_scores_ls = []   
             
         for msg in tqdm(data):
@@ -532,12 +525,27 @@ class Probe():
                     draw_plot(x_range, pred_scores+label_scores, pred_legends+label_legends, fig_path)
         
             elif score == 'attn':
+                if reg:
+                    reg_answers = cots[idx]['answer']
+                    reg_answer = reg_answers[eval(label)-1]
+                    reg_steps = dataloader.split_cot(reg_answer)
+                    reg_cot = '.'.join(reg_steps) + '.'
+                    reg_cot = reg_cot.replace(' Reason: ',"")
                 layers = range(40)
-                fold_path = result_path + f'_attn_heat_{idx}/'
-                if not os.path.exists(fold_path):
-                    os.mkdir(fold_path)
-                self.cal_attn(question, pred, pred_cot, layers, fold_path)
-
+                
+                scores = self.cal_attn(question, label, pred_cot, layers)
+        
+                if reg:
+                    reg_scores = self.cal_attn(question, label, reg_cot, layers)
+                    scores = (np.array(reg_scores) - np.array(scores)) 
+                
+                if avg:
+                    pred_scores_ls.append(scores) 
+                else:   
+                    fig_path = result_path + f'_idx-{idx}.pdf'
+                    layers = [i+1 for i in layers]
+                    index = list(range(len(scores.shape[1])))
+                    draw_heat(layers,  index, scores.tolist(), fig_path)
             
             elif score == 'attn_attr':
                 if reg:
@@ -553,14 +561,22 @@ class Probe():
         
                 if reg:
                     reg_scores = self.cal_attn_attr(question, label, reg_cot, layers)
-                    scores = (np.array(scores) / len(steps) - np.array(reg_scores) / len(reg_steps)) / (np.array(reg_scores) / len(reg_steps))
-                
+                    if diff:
+                        scores = (np.array(scores) / len(steps) - np.array(reg_scores) / len(reg_steps)) / (np.array(reg_scores) / len(reg_steps))
+                    else:
+                        if loss_type == 'label':
+                            scores = [scores[0], reg_scores[0]]
+                        else:
+                            scores = np.array(reg_scores[0]) - np.array(scores[0])
                 if avg:
                     pred_scores_ls.append(scores) 
                 else:   
                     fig_path = result_path + f'_idx-{idx}.pdf'
                     layers = [i+1 for i in layers]
-                    draw_plot(layers, list(scores), ['stem', 'option', 'cot', 'sum'], fig_path)
+                    if loss_type == 'label':
+                        draw_plot(layers, list(scores), ['Drift', 'Correct'], fig_path)
+                    elif reg and not diff:
+                        draw_plot(layers, list(scores), ['stem', 'option', 'cot', 'sum'], fig_path)
             
             elif score == 'mlp_attr':
                 if reg:
@@ -595,6 +611,9 @@ class Probe():
             
         elif score in ['attn_attr', 'mlp_attr'] and avg:
             return pred_scores_ls
+        
+        elif score in ['attn'] and avg:
+            return np.array(pred_scores_ls).mean(axis=0)
 
 
 def get_index(mode, dataset):
@@ -616,40 +635,52 @@ if __name__ == '__main__':
     dataloader = CoTLoader()
     layers = [i+1 for i in range(40)]
     
-    if reg: 
-        w_index = get_index(mode='C2W', dataset=dataset)
-        w_data, index = dataloader.load_data(cot_file=cot_file_path, base_file=base_file_path, mode='C2W', cnt=cnt, index=w_index)
-        w_results = probe.probe_data(w_data, index)
+    # if reg: 
+    #     w_index = get_index(mode='C2W', dataset=dataset)
+    #     w_data, index = dataloader.load_data(cot_file=cot_file_path, base_file=base_file_path, mode='C2W', cnt=cnt, index=w_index)
+    #     w_results = probe.probe_data(w_data, index)
+    #     if diff:
+    #         c_index = get_index(mode='W2C', dataset=dataset)
+    #         c_data, index = dataloader.load_data(cot_file=cot_file_path, base_file=base_file_path, mode='W2C', cnt=cnt, index=c_index)
+    #         c_results = probe.probe_data(c_data, index)
         
-        c_index = get_index(mode='W2C', dataset=dataset)
-        c_data, index = dataloader.load_data(cot_file=cot_file_path, base_file=base_file_path, mode='W2C', cnt=cnt, index=c_index)
-        c_results = probe.probe_data(c_data, index)
-        
-    else:
-        index = get_index(mode=mode, dataset=dataset)
-        data, index = dataloader.load_data(cot_file=cot_file_path, base_file=base_file_path, mode=mode, cnt=cnt, index=index)
-        results = probe.probe_data(data, index)
+    # else:
+    index = get_index(mode=mode, dataset=dataset)
+    data, index = dataloader.load_data(cot_file=cot_file_path, base_file=base_file_path, mode=mode, cnt=cnt, index=index)
+    results = probe.probe_data(data, index)
+   
+    # if score == 'attn_attr':    
+    #     label_dic = {'stem':0, 'option':1, 'cot':2}
+    # elif score == 'mlp_attr':
+    #     label_dic = {'up_proj':0, 'down_proj':1}
 
-    if score == 'attn_attr':    
-        label_dic = {'stem':0, 'option':1, 'cot':2}
-    elif score == 'mlp_attr':
-        label_dic = {'up_proj':0, 'down_proj':1}
-
-    if reg:
-        for rel in label_dic.keys():
-            key = label_dic[rel]
-            fig_path = result_path + f'_{rel}.png'
-            w_scores = np.array(w_results)[:, key, :]
-            c_scores = np.array(c_results)[:, key, :]
-            results = np.concatenate([w_scores, c_scores], axis=-1)     
-            labels = ['Drift', 'Correct'] 
-            draw_line_plot(layers, results, labels, fig_path) 
-    else:
-        scores = []
-        for result in results:
-            scores.append(np.concatenate(result))
-        labels = list(label_dic.keys())
+    if score == 'attn':
         fig_path = result_path + f'.png'
-        draw_line_plot(layers, scores, labels, fig_path) 
+        index = layers
+        draw_heat(layers, index, results.tolist(), fig_path) 
+    # if reg:
+    #     if diff:
+    #         for rel in label_dic.keys():
+    #             key = label_dic[rel]
+    #             fig_path = result_path + f'_{rel}.png'
+    #             w_scores = np.array(w_results)[:, key, :]
+    #             c_scores = np.array(c_results)[:, key, :]
+    #             results = np.concatenate([w_scores, c_scores], axis=-1)     
+    #             labels = ['Drift', 'Correct'] 
+    #             draw_line_plot(layers, results, labels, fig_path) 
+    #     else:
+    #         fig_path = result_path + f'.png'
+    #         w_scores = np.array(w_results)
+    #         # c_scores = np.array(c_results)
+    #         results = np.concatenate(w_results, axis=-1)     
+    #         labels = ['Drift', 'Correct'] 
+    #         draw_line_plot(layers, results, labels, fig_path) 
+    # else:
+    #     scores = []
+    #     for result in results:
+    #         scores.append(np.concatenate(result))
+    #     labels = list(label_dic.keys())
+    #     fig_path = result_path + f'.png'
+    #     draw_line_plot(layers, scores, labels, fig_path) 
     
     

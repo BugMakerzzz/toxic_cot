@@ -36,14 +36,14 @@ def draw_acc(layers, scores, label, path):
     plt.savefig(path)
     plt.close()
 
-def draw_heat(layers, index, scores, path, exp):
+def draw_heat(layers, index, scores, path, exp=None):
     sns.set()
     if exp == 'attn':
         ax=sns.heatmap(scores, cmap="RdBu_r", center=0, vmin=0, vmax=0.4, xticklabels=layers, yticklabels=index)
     elif exp == 'mlp':
         ax=sns.heatmap(scores, cmap="BrBG", center=0, vmin=0, vmax=0.4, xticklabels=layers, yticklabels=index)
     else:
-        return 
+        ax=sns.heatmap(scores, cmap="RdBu_r", center=0, xticklabels=layers, yticklabels=index)
     # ax=sns.heatmap(scores, cmap="RdBu_r", xticklabels=layers, yticklabels=index)
     plt.xticks(size = 6)
     plt.savefig(path)
@@ -60,6 +60,8 @@ def draw_line_plot(x_range, results, labels, path):
         for i in range(len(labels)): 
             tags += [labels[i]] * len(x_range)
     data_plot = pd.DataFrame({"layers":layers, "scores":scores, "tags":tags})
+    # handles, labels = ax.get_legend_handles_labels()
+    # plt.legend(handles=handles[1:], labels=labels[1:])
     sns.lineplot(x = "layers", y = "scores", hue='tags', data=data_plot)
     plt.axhline(0, linestyle='--')
     plt.savefig(path)
