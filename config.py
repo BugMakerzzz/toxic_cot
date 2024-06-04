@@ -13,6 +13,11 @@ siqa_train_label_path = './data/SocialIQA/train-labels.lst'
 siqa_dev_data_path = './data/SocialIQA/dev.jsonl'
 siqa_dev_label_path = './data/SocialIQA/dev-labels.lst'
 
+piqa_train_data_path = './data/PIQA/train.jsonl'
+piqa_train_label_path = './data/PIQA/train-labels.lst'
+piqa_dev_data_path = './data/PIQA/valid.jsonl'
+piqa_dev_label_path = './data/PIQA/valid-labels.lst'
+
 gsm8k_train_data_path = './data/grade-school-math/grade_school_math/data/train.jsonl'
 gsm8k_dev_data_path = './data/grade-school-math/grade_school_math/data/test.jsonl'
 
@@ -27,3 +32,13 @@ wino_w2c_index = [1, 2, 20, 22, 23, 32, 34, 38, 42, 46, 54, 59, 62, 65, 77, 79, 
 csqa_c2w_index = [10, 24, 36, 41, 49, 137, 149, 158, 161, 174, 177, 193, 219, 220, 231, 244, 276, 283, 286, 297, 303, 308, 331, 340, 355, 379, 386, 394, 395, 402, 413, 424, 431, 441, 443, 450, 457, 467, 488, 521, 523, 525, 527, 539, 599, 604, 645, 652, 654, 685, 700, 709, 738, 754, 770, 795, 825, 826, 858, 869, 881, 893, 898, 903, 910, 913, 925, 929, 930, 939, 940, 946, 955, 993, 998]
 #csqa w2c 114
 csqa_w2c_index = [2, 5, 7, 14, 26, 31, 34, 35, 48, 58, 66, 75, 92, 96, 103, 109, 122, 125, 126, 127, 175, 184, 185, 186, 191, 200, 209, 218, 245, 247, 248, 249, 250, 253, 260, 267, 274, 293, 295, 314, 322, 324, 356, 363, 364, 370, 376, 380, 385, 387, 398, 412, 429, 438, 446, 513, 516, 524, 532, 543, 550, 566, 567, 588, 590, 592, 593, 594, 601, 602, 607, 616, 622, 624, 628, 633, 639, 640, 644, 646, 659, 673, 705, 713, 718, 721, 723, 744, 747, 755, 756, 758, 760, 768, 771, 776, 781, 791, 805, 818, 827, 829, 832, 835, 845, 851, 860, 892, 895, 927, 932, 956, 957, 972]
+OPENAI_API_KEY = 'fGBdIFoaDUeLQ'
+# OPENAI_API_KEY = 'sk-i7t4FKCdavAisTCWFc2f9737854348F29d17C9E7De2e9d9e'
+max_requests_per_minute = 3500 # 3_000 * 0.5
+max_tokens_per_minute = 90000 #250_000 * 0.5
+
+# max_requests_per_minute = 60 # 3_000 * 0.5
+# max_tokens_per_minute = 60000 #250_000 * 0.5
+# request_url = "https://api.openai.com/v1/chat/completions"
+request_url = 'https://ai.liaobots.work/v1/chat/completions'
+# request_url = 'https://api.xty.app/v1/chat/completions'

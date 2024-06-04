@@ -1,0 +1,22 @@
+[
+    {
+        "question":"The test was hard for Samuel but a breeze for Randy , since _ had failed to study for it.\n(1) Samuel (2) Randy\nRational: To pass a test, a person need to study for it. If a person feel the test like a breeze, it means the test is easy for him. A person feels the test easy, because he studies hard for it. Since we know that Samuel feel the test very hard, she may fail to study for it. So the answer is: (1) Samuel.",
+        "answer":"Feedback: The rational is good and do not need to change."
+    },
+    {
+        "question":"Kyle slowly wormed their way into the life of Derrick, because _ was good and manipulating people.\n(1) Kyle (2) Derrick\nRational: A person wormes his way into other's life, because he is friendly and approachable. A person is seen as manipulating people, that means he like to interact with others. Since Kyle slowly wormed their way into the life of Derric, Derric will be seen as good and manipulating people. So the answer is: (2) Derric.",
+        "answer":"Feedback: The rational is wrong. Since a person wormes his way into other's life is friendly, it's Kyle who was good, not Derrick."
+    },
+    {
+        "question":"Donald was very grounded but Michael often got lost in their daydreams. _ was very capricious all the time.\n(1) Donald (2) Michael\nRational: A person is grounded means he works hard and does not like to fantasize. A person often gets lost in his daydreams, he is seen as unrealistic and egocentric. A person is capricious all the time means he does everything only according to his own ideas. Since Michael often gets lost in their daydreams but Donald does not, Donald is seen as very capricious all the time. So the answer is: (1) Donald.",
+        "answer":"Feedback: The rational is wrong. Since a capricious person does everything only according to his own ideas, he likely to got lost in their daydreams. Thus, it is Michael who is capricious instead of Donald."
+    },
+    {
+        "question":"After stopping when running, Betty was able to help Rachel treat their asthma because _ has it too.\n(1) Betty (2) Rachel\nRational: A person who has a mild disease may knows how to treat it. Since Betty was able to help Rachel treat their asthma, Rachel has asthma. So the answer is: (2) Rachel.",
+        "answer":"Feedback: The rational is wrong. Since the question asks who has it too, it more likely to fill the Betty into the blank since she knows how to treat the asthma."
+    },
+    {
+        "question":"Jeffrey was sick with the stomach flu and not hungry, but Christopher was starving. _ ordered food.\n(1) Jeffrey (2) Christopher\nRational: Stomach flu is a viral infection in the digestive system. A person is starve so that he need to eat something next. A person is not hungry means he does not want to eat something. Ordering food means to buy food online. A person may eat food after ordering it. Since Christopher was starving and Jeffery was sick and not hungry, Christopher tended to order food. So the answer is: (2) Christopher.",
+        "answer":"Feedback: The rational is good and do not need to change."
+    }
+]       

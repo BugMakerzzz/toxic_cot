@@ -1,0 +1,25 @@
+[
+    {
+        "question":"The test was hard for Samuel but a breeze for Randy , since _ had failed to study for it.\n(1) Samuel (2) Randy\nQuestion 1: Why the test is hard for Samul? Answer: If the test is hard for Samul, he may not study for it.\nQuestion 2:Why the test is a breeze for Randy? Answer: If Randy feel the test like a breeze, the test is easy for her. In that case, she may study hard for it.\nQuestion 3:Who had fail to study for the test? Answer: Since Samul does not study for the test, Samul fails to study for it.",
+        "answer":"So the answer is: (1) Samuel."
+    },
+    {
+        "question":"Kyle slowly wormed their way into the life of Derrick, because _ was good and manipulating people.\n(1) Kyle (2) Derrick\nQuestion 1: Why Kyle slowly wormed their way into the life of Derrick? Answer: If Kyle wormes his way into Derrick's life, Kyle is friendly and approachable and Derrick like him.\nQuestion 2:Who was good and manipulating people? Answer: Since is friendly and approachable and Derrick like him, Kyle will be seen as good and manipulating people.",
+        "answer":"So the answer is: (1) Kyle."
+    },
+    {
+        "question":"Donald was very grounded but Michael often got lost in their daydreams. _ was very capricious all the time.\n(1) Donald (2) Michael\nQuestion 1: What will Donald do if he was very grounded? Answer: If Donald is grounded, he works hard and does not like to fantasize.\nQuestion 2: What will Michael do if he often got lost in their daydreams? Answer: If Michael often gets lost in his daydreams, he is unrealistic and egocentric.\nQuestion 3: Who was very capricious all the time? Answer: If a person is capricious all the time means he does everything only according to his own ideas, he likely gets lost in their daydreams. Since Michael often does it, Michael is seen as very capricious all the time.",
+        "answer":"So the answer is: (2) Michael."
+    },
+    {
+        "question":"After stopping when running, Betty was able to help Rachel treat their asthma because _ has it too.\n(1) Betty (2) Rachel\nQuestion 1: Why does Betty was able to help Rachel treat their asthma? Answer: If Betty was able to help Rachel treat asthma, she knows how to treat it. Since a person who has a mild disease may knows how to treat it, Betty may has asthma.\nQuestion 2: Who has asthma too? Answer: Since Rachel already has asthma and Betty may has asthma, Betty has asthma too.",
+        "answer":"So the answer is: (1) Betty."
+    },
+    {
+        "question":"Jeffrey was sick with the stomach flu and not hungry, but Christopher was starving. _ ordered food.\n(1) Jeffrey (2) Christopher\nQuestion 1: What will Jeffrey do if he was sick with the stomach flu and not hungry? Answer: Since Jeffrey was sick with the stomach flu and not hungry, he does not want to eat anything. In that case, he will not order food.\nQuestion 2: What will Christopher do if he was starving? Answer: If Christopher is starve, he need to eat something next. If he needs food, he tends to order food.\nQuestion 3: Who may ordered food? Answer: Christopher may ordered food.",
+        "answer":"So the answer is: (2) Christopher."
+    }
+]
+
+        
+        

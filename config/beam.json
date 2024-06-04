@@ -1,0 +1,1 @@
+{"max_new_tokens":500, "num_beams":5, "do_sample":true, "top_k":10, "top_p":0.9, "num_return_sequences":5, "max_length":2000, "res_decoding":false}

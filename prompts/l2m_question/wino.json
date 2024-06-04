@@ -1,0 +1,22 @@
+[
+    {
+        "question":"The test was hard for Samuel but a breeze for Randy , since _ had failed to study for it.\n(1) Samuel (2) Randy",
+        "answer":"To solve the question, we need to solve these subquestions:\nQuestion 1: Why the test is hard for Samul?\nQuestion 2:Why the test is a breeze for Randy?\nQuestion 3:Who had fail to study for the test?"
+    },
+    {
+        "question":"Kyle slowly wormed their way into the life of Derrick, because _ was good and manipulating people.\n(1) Kyle (2) Derrick",
+        "answer":"To solve the question, we need to solve these subquestions:\nQuestion 1: Why Kyle slowly wormed their way into the life of Derrick?\nQuestion 2:Who was good and manipulating people?"
+    },
+    {
+        "question":"Donald was very grounded but Michael often got lost in their daydreams. _ was very capricious all the time.\n(1) Donald (2) Michael",
+        "answer":"To solve the question, we need to solve these subquestions:\nQuestion 1: What will Donald do if he was very grounded?\nQuestion 2: What will Michael do if he often got lost in their daydreams?\nQuestion 3: Who was very capricious all the time?"
+    },
+    {
+        "question":"After stopping when running, Betty was able to help Rachel treat their asthma because _ has it too.\n(1) Betty (2) Rachel",
+        "answer":"To solve the question, we need to solve these subquestions:\nQuestion 1: Why does Betty was able to help Rachel treat their asthma?\nQuestion 2: Who has asthma too?"
+    },
+    {
+        "question":"Jeffrey was sick with the stomach flu and not hungry, but Christopher was starving. _ ordered food.\n(1) Jeffrey (2) Christopher",
+        "answer":"To solve the question, we need to solve these subquestions:\nQuestion 1: What will Jeffrey do if he was sick with the stomach flu and not hungry?\nQuestion 2: What will Christopher do if he was starving?\nQuestion 3: Who may ordered food?"
+    }
+]       

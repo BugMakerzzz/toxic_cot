@@ -1,0 +1,24 @@
+[
+    {
+        "question":"How do you flood a room?\n(1) fill it with objects. (2) fill it with water",
+        "answer":"To solve the question, we need to solve these subquestions:\nQuestion 1: What does flood a room mean?\nQuestion 2: How do a person flood a room?"
+    },
+    {
+        "question":"How can I get oil stains out of my driveway?\n(1) Douse each stain with a couple cans of beer. (2) Douse each stain with a couple cans of soda.",
+        "answer":"To solve the question, we need to solve these subquestions:\nQuestion 1: How to get old stains out?\nQuestion 2: What can oil be soluble in?"
+    },
+    {
+        "question":"Soothe a painful sunburn.\n(1) Wait until brewed tea bag is cool, then apply on burn. (2) Wait until brewed tea bag is hot, then apply on burn.",
+        "answer":"To solve the question, we need to solve these subquestions:\nQuestion 1: How to soothe a painfule sunborn?\nQuestion 2: Whether hot or cold material can soothe a sunborn?"
+    },
+    {
+        "question":"What can I use for fuel in an alcohol stove?\n(1) Use acetone. (2) Use vinegar.",
+        "answer":"To solve the question, we need to solve these subquestions:\nQuestion 1: What properties must the fuel have?\nQuestion 2: What materials are flammable?"
+    },
+    {
+        "question":"How can I cut the handles of metal cutlery?\n(1) Use a hand saw to cut the handles. (2) Use a hand drill to cut the handles.",
+        "answer":"To solve the question, we need to solve these subquestions:\nQuestion 1: (1) What direction of force is needed for cutting?\nQuestion 2: What tools can provide people with force in that direction?"
+    }
+]
+
+    

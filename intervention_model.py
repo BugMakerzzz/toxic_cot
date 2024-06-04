@@ -31,7 +31,14 @@ class Model():
         model_path = f'./model/{model_name}'
         if self.is_llama:
             self.model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16, trust_remote_code=True, device_map='auto') 
-            self.model.eval()
+            
+        elif self.is_baichuan:
+            self.model = AutoModelForCausalLM.from_pretrained(model_path,
+                revision="v2.0",
+                device_map="auto",
+                torch_dtype=torch.bfloat16,
+                trust_remote_code=True)
+        self.model.eval()
         # store model details
         self.num_layers = self.model.config.num_hidden_layers
         self.num_neurons = self.model.config.hidden_size
@@ -56,7 +63,7 @@ class Model():
             self.get_attention_layer = lambda layer: self.model.gpt_neox.layers[layer].attention
             self.word_emb_layer = self.model.gpt_neox.embed_in
             self.get_neuron_layer = lambda layer: self.model.gpt_neox.layers[layer].mlp
-        elif self.is_llama:
+        elif self.is_llama or self.is_baichuan:
             self.get_attention_layer = lambda layer: self.model.model.layers[layer].self_attn
             self.word_emb_layer = self.model.model.embed_tokens
             self.get_neuron_layer = lambda layer: self.model.model.layers[layer].mlp

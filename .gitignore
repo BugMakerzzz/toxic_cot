@@ -3,5 +3,4 @@
 /data
 /__pycache__
 /result
-/P36_data.json
-/P36.py
+/config.py

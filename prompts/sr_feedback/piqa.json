@@ -1,0 +1,24 @@
+[
+    {
+        "question":"How do you flood a room?\n(1) fill it with objects. (2) fill it with water\nRationale: Too much water can cause flooding. Thus, if we want to flood a room, we should use water. So the answer is: (2) fill it with water",
+        "answer":"Feedback: The rational is good and do not need to change."
+    },
+    {
+        "question":"How can I get oil stains out of my driveway?\n(1) Douse each stain with a couple cans of beer. (2) Douse each stain with a couple cans of soda.\nRationale: You can use beer to get oil stains out. So the answer is: (1) Douse each stain with a couple cans of beer.",
+        "answer":"Feedback: The rational is wrong. It is Sodium carbonate solution which can wash away oil stains. But beer can not contain it, so beer can not get oil stains out."
+    },
+    {
+        "question":"Soothe a painful sunburn.\n(1) Wait until brewed tea bag is cool, then apply on burn. (2) Wait until brewed tea bag is hot, then apply on burn.\nRationale: If a person want to soothe a painful sunburn, he can use a tea bag. So the answer is: (2) Wait until brewed tea bag is hot, then apply on burn.",
+        "answer":"Feedback: The rational is wrong. Sunburn can be alleviated only by applying cold material but not hot material. Thus, you should not apply hot tea bag."
+    },
+    {
+        "question":"What can I use for fuel in an alcohol stove?\n(1) Use acetone. (2) Use vinegar.\nRationale: Vinegar can be used for fule. So the answer is: (2) Use vinegar.",
+        "answer":"Feedback: The rational is wrong. Vinegar is not flammable, so it can not be used for fuel."
+    },
+    {
+        "question":"How can I cut the handles of metal cutlery?\n(1) Use a hand saw to cut the handles. (2) Use a hand drill to cut the handles.\nRationale: A hand saw is used for making cuts and a hand drill is used for making holes. If you want to cut something, you should use a hand saw rather than hand drill. So the answer is: (1) Use a hand saw to cut the handles.",
+        "answer":"Feedback: The rational is good and do not need to change."
+    }
+]
+
+    

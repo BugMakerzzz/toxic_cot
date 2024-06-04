@@ -1,0 +1,22 @@
+[
+    {
+        "question":"How do you flood a room?\n(1) fill it with objects. (2) fill it with water",
+        "answer":"Answer: (2) fill it with water"
+    },
+    {
+        "question":"How can I get oil stains out of my driveway?\n(1) Douse each stain with a couple cans of beer. (2) Douse each stain with a couple cans of soda.",
+        "answer":"Answer: (2) Douse each stain with a couple cans of soda."
+    },
+    {
+        "question":"Soothe a painful sunburn.\n(1) Wait until brewed tea bag is cool, then apply on burn. (2) Wait until brewed tea bag is hot, then apply on burn.",
+        "answer":"Answer: (1) Wait until brewed tea bag is cool, then apply on burn."
+    },
+    {
+        "question":"What can I use for fuel in an alcohol stove?\n(1) Use acetone. (2) Use vinegar.",
+        "answer":"Answer: (1) Use acetone."
+    },
+    {
+        "question":"How can I cut the handles of metal cutlery?\n(1) Use a hand saw to cut the handles. (2) Use a hand drill to cut the handles.",
+        "answer":"Answer: (1) Use a hand saw to cut the handles."
+    }
+]

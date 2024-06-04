@@ -1,0 +1,24 @@
+[
+    {
+        "question":"How do you flood a room?\n(1) fill it with objects. (2) fill it with water\nRationale: Too much water can cause flooding. Thus, if we want to flood a room, we should use water. So the answer is: (2) fill it with water Feedback: The rational is good and do not need to change.",
+        "answer":"Too much water can cause flooding. Thus, if we want to flood a room, we should use water. So the answer is: (2) fill it with water"
+    },
+    {
+        "question":"How can I get oil stains out of my driveway?\n(1) Douse each stain with a couple cans of beer. (2) Douse each stain with a couple cans of soda.\nRationale: You can use beer to get oil stains out. So the answer is: (1) Douse each stain with a couple cans of beer. Feedback: The rational is wrong. It is Sodium carbonate solution which can wash away oil stains. But beer can not contain it, so beer can not get oil stains out.",
+        "answer":"Sodium carbonate solution can wash away oil stains. The soda is a kind of sodium carbonate solution. Thus, you can use cans of soda to get oil stains out of your driveway. So the answer is: (2) Douse each stain with a couple cans of soda."
+    },
+    {
+        "question":"Soothe a painful sunburn.\n(1) Wait until brewed tea bag is cool, then apply on burn. (2) Wait until brewed tea bag is hot, then apply on burn.\nRationale: If a person want to soothe a painful sunburn, he can use a tea bag. So the answer is: (2) Wait until brewed tea bag is hot, then apply on burn. Feedback: The rational is wrong. Sunburn can be alleviated only by applying cold material but not hot material. Thus, you should not apply hot tea bag.",
+        "answer":"Sunburn can be alleviated by applying cold material. Thus, you should apply cool tea rather than hot tea bag to soothe your sunburn. So the answer is: (1) Wait until brewed tea bag is cool, then apply on burn."
+    },
+    {
+        "question":"What can I use for fuel in an alcohol stove?\n(1) Use acetone. (2) Use vinegar.\nRationale: Vinegar can be used for fule. So the answer is: (2) Use vinegar. Feedback: The rational is wrong. Vinegar is not flammable, so it can not be used for fuel.",
+        "answer":"Acetone is flammable, while vinegar is not. If you want to use something for fuel, the thing you use should be flammable. Thus, you should use acetone for fuel in an alcohol stove. So the answer is: (1) Use acetone."
+    },
+    {
+        "question":"How can I cut the handles of metal cutlery?\n(1) Use a hand saw to cut the handles. (2) Use a hand drill to cut the handles.\nRationale: A hand saw is used for making cuts and a hand drill is used for making holes. If you want to cut something, you should use a hand saw rather than hand drill. So the answer is: (1) Use a hand saw to cut the handles. Feedback: The rational is good and do not need to change.",
+        "answer":"A hand saw is used for making cuts and a hand drill is used for making holes. If you want to cut something, you should use a hand saw rather than hand drill. So the answer is: (1) Use a hand saw to cut the handles."
+    }
+]
+
+    

@@ -2,6 +2,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import pandas as pd
+from matplotlib import rcParams
+
+rcParams['font.family']='sans-serif'
+plt.rcParams['font.sans-serif'] = ['Times New Roman']  # 如果要显示中文字体,则在此处设为：SimHei
+plt.rcParams['axes.unicode_minus'] = False  # 显示负号
+
 
 def draw_plot(layers, scores, labels, path):
     x_values = layers
@@ -36,21 +42,40 @@ def draw_acc(layers, scores, label, path):
     plt.savefig(path)
     plt.close()
 
-def draw_heat(layers, index, scores, path, exp=None):
+def draw_heat(index, scores, path,  exp=None, vmax=None):
     sns.set()
     if exp == 'attn':
-        ax=sns.heatmap(scores, cmap="RdBu_r", center=0, vmin=0, vmax=0.4, xticklabels=layers, yticklabels=index)
+        ax=sns.heatmap(scores, cmap="RdBu_r", center=0, vmin=0, vmax=vmax, yticklabels=index)
     elif exp == 'mlp':
-        ax=sns.heatmap(scores, cmap="BrBG", center=0, vmin=0, vmax=0.4, xticklabels=layers, yticklabels=index)
+        ax=sns.heatmap(scores, cmap="BrBG", center=0, vmin=0,  vmax=vmax, yticklabels=index)
     else:
-        ax=sns.heatmap(scores, cmap="RdBu_r", center=0, xticklabels=layers, yticklabels=index)
+        ax=sns.heatmap(scores, cmap="RdBu_r", center=0)
+
+    ticks = [0, 4, 9, 14, 19, 24, 29, 34, 39]
+    tick_labels = [i+1 for i in ticks]
+    ticks = [i+0.5 for i in ticks]
+    if exp:
     # ax=sns.heatmap(scores, cmap="RdBu_r", xticklabels=layers, yticklabels=index)
-    plt.xticks(size = 6)
+        # plt.ylabel('ADE', fontdict={'family' : 'Times New Roman', 'size':22})
+        plt.xlabel('Layers', fontdict={'family' : 'Times New Roman', 'size':22})
+        plt.yticks(fontproperties = 'Times New Roman', fontsize=20)
+        plt.xticks(ticks=ticks, labels=tick_labels, fontproperties = 'Times New Roman', fontsize=20)
+        plt.subplots_adjust(left=0.06, right=0.99, top=0.98, bottom=0.15)
+    else:
+        plt.ylabel('Layers', fontdict={'family' : 'Times New Roman', 'size':22})
+        plt.xlabel('Heads', fontdict={'family' : 'Times New Roman', 'size':22})
+        plt.yticks(ticks=ticks, labels=tick_labels, fontproperties = 'Times New Roman', fontsize=20)
+        plt.xticks(ticks=ticks, labels=tick_labels, fontproperties = 'Times New Roman', fontsize=20)
+        plt.subplots_adjust(left=0.15, right=0.99, top=0.98, bottom=0.15)
+    cbar = ax.collections[0].colorbar
+    cbar.ax.tick_params(labelsize=20)
+    cbarlabels = cbar.ax.get_yticklabels() 
+    [label.set_fontname('Times New Roman') for label in cbarlabels]
     plt.savefig(path)
     plt.close()
   
 
-def draw_line_plot(x_range, results, labels, path):
+def draw_line_plot(x_range, results, labels, path, y_label='Scores'):
     layers = []
     scores = []
     tags = []
@@ -62,25 +87,36 @@ def draw_line_plot(x_range, results, labels, path):
     data_plot = pd.DataFrame({"layers":layers, "scores":scores, "tags":tags})
     # handles, labels = ax.get_legend_handles_labels()
     # plt.legend(handles=handles[1:], labels=labels[1:])
-    sns.lineplot(x = "layers", y = "scores", hue='tags', data=data_plot)
-    plt.axhline(0, linestyle='--')
+    ax = sns.lineplot(x = "layers", y = "scores", hue='tags', data=data_plot)
+    # plt.axhline(0, linestyle='--')
+    plt.gca().legend().set_title('')
+    plt.ylabel(ylabel=y_label, fontdict={'family' : 'Times New Roman', 'size':22})
+    plt.xlabel('Layers', fontdict={'family' : 'Times New Roman', 'size':22})
+    plt.yticks(fontproperties = 'Times New Roman', fontsize=20)
+    plt.xticks(fontproperties = 'Times New Roman', fontsize=20)
+    plt.legend(prop={'family' : 'Times New Roman', 'size':22})
+    plt.rcParams.update({'legend.fontsize':22})
+    if y_label == 'Attr Div':
+        plt.axhline(0, linestyle='--', color='k')
+        plt.subplots_adjust(left=0.17, right=0.99, top=0.99, bottom=0.15)
+    else:
+        plt.subplots_adjust(left=0.16, right=0.99, top=0.99, bottom=0.15)
     plt.savefig(path)
     plt.close()
-# # def extrat_gsm8k(text):
-# #     text = text.s
-# #     der data process-for-prediction(self, text):text a text.split(' nin')leltext = text,split()::-1]flag m False
-# # ret  ..for i in range( len(text)):s = text[i]for i in range(len[s)):if sil.isdigit():flag = True
-# # ret as
-# # break
-# # if flag:break
-# # ret1 for i in range(lenret)):1f ret[11.1sdigit():retl +m ret(i]return retl  
-# results = [0.19, 0.18, 0.16, 0.13, 0.14, 0.21, 0.18, 0.2, 0.2]
 
-def draw_attr_heat(scores, x_tokens, y_tokens, path):
+def draw_attr_bar(layers, scores, path):
+    score_up = np.where(scores > 0, scores, 0)
+    score_down = np.where(scores < 0, scores, 0)
+
+    plt.ylabel('Score', fontdict={'family' : 'Times New Roman'})
+    plt.xlabel('Layers', fontdict={'family' : 'Times New Roman'})
+    plt.yticks(fontproperties = 'Times New Roman')
+    plt.xticks(fontproperties = 'Times New Roman')
+        
+    plt.xticks([1, 10, 20, 30, 40])
+    plt.bar(layers, score_up, width=0.5, color='#EC7063')
+    plt.bar(layers, score_down, width=0.5, color='#3498DB')
+
     
-    ax=sns.heatmap(scores, cmap="RdBu_r", center=0, xticklabels=x_tokens, yticklabels=y_tokens)
-    # ax=sns.heatmap(scores, cmap="RdBu_r", xticklabels=layers, yticklabels=index)
-    plt.xticks(size = 2)
-    plt.yticks(size = 2)
     plt.savefig(path)
-    plt.close()
+    

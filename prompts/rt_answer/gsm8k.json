@@ -1,0 +1,24 @@
+[
+    {
+        "question":"Rationale: In round one, Jeff completed 16 - 1 = 15.\nIn round two, Jeff completed 16 - 3 = 13.\nIn round three, Jeff completed 16 + 4 = 20.\nIn round four, Jeff completed 16 / 2 = 8.\nJeff completed 15 + 13 + 20 + 8 = 56 skips in total.\nJeff skipped an average of 56 / 4 = 14 skips per round.\nQuestion: Sam and Jeff had a skipping competition at recess. The competition was split into four rounds. Sam completed 1 more skip than Jeff in the first round. Jeff skipped 3 fewer times than Sam in the second round. Jeff skipped 4 more times than Sam in the third round. Jeff got tired and only completed half the number of skips as Sam in the last round. If Sam skipped 16 times in each round, what is the average number of skips per round completed by Jeff?",
+        "answer":"Answer: 14"
+    },
+    {
+        "question":"Rationale: Stella and Twinkle filled up the truck at the rate of 250 blocks per hour per person, a total of 2*250 = 500 blocks per hour for both.\nAfter working for four hours, Stella and Twinkle had filled 4*500 = 2000 blocks into the truck.\nThe number of blocks they had to put into the truck for it to be full is 6000-2000 = 4000\nWhen 6 more people joined Stella and Twinkle, a total of 2+6 = 8 people were filling the truck now.\nWorking at the rate of 250 blocks per person, the eight people filled the truck with 250*8 = 2000 blocks in one hour.\nIf there were 4000 blocks that still needed to be put into the truck, the 8 people took 4000/2000 = 2 hours to fill the truck with the blocks.\nThe total time it took to fill up the tank is 4+2 = 6 hours.\nQuestion: Stella and Twinkle are filling up a truck with a capacity of 6000 stone blocks at the rate of 250 blocks per hour per person. They work for four hours and are then joined by 6 other people who also work at the same rate. How many hours did filling the truck take?",
+        "answer":"Answer: 6"
+    },
+    {
+        "question":"Rationale: wice ten roommates is 2*10 = 20\nJohn has 5 more than 20 roommates which is 20+5 = 25 roommates\nQuestion: John has five more roommates than twice as many as Bob. If Bob has 10 roommates, how many roommates does John have?",
+        "answer":"Answer: 25"
+    },
+    {
+        "question":"Rationale: Kyle has 2 + 3 = 5 glass bottles.\nHe needs to make 15 x 5 = 75 origami stars.\nQuestion: Kyle bought 2 glass bottles that can hold 15 origami stars each. He then bought another 3 identical glass bottles. How many stars must Kyle make to fill all the glass bottles he bought?",
+        "answer":"Answer: 75"
+    },
+    {
+        "question":"Rationale: Ann had 3 dozen oatmeal cookies - 2 dozen = 1 dozen oatmeal cookies left.\nAnn had 2 dozen sugar cookies - 1.5 dozen = .5 dozen sugar cookies left.\nAnn had 4 dozen chocolate chip cookies - 2.5 dozen = 1.5 dozen chocolate chip cookies left.\nAnn has a total of 1 + .5 + 1.5 dozen cookies = 3 dozen cookies.\n3 dozen cookies is 3 *12 cookies = 36 cookies remaining.\nQuestion: Ann is baking cookies. She bakes three dozen oatmeal raisin cookies, two dozen sugar cookies, and four dozen chocolate chip cookies. Ann gives away two dozen oatmeal raisin cookies, 1.5 dozen sugar cookies, and 2.5 dozen chocolate chip cookies. How many total cookies does she keep?",
+        "answer":"Answer: 36"
+    }
+]
+
+

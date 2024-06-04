@@ -1,0 +1,24 @@
+[
+    {
+        "question":"Quinn wanted to help me clean my room up because it was so messy. What will Quinn want to do next? \n (1) Eat messy snacks (2) help out a friend (3) Pick up the dirty clothes\nRationale: Since Quinn wanted to help me clean my room, she want to help out a friend. So the answer is: (2) help out a friend",
+        "answer":"Feedback: The rational is wrong. Since the question asks what to do 'next'. A more reasonable guess is to help organize clothes, etc., because the house is very messy"
+    },
+    {
+        "question":"Sasha's mom passed out in the middle of the party. Aubrey took Sasha's mom to the hospital. What will Aubrey want to do next? \n (1) help Aubrey go back home (2) keep on partying without the mom (3) going on with the mom\nRationale: Sasha's mom is sent to the hospital beacuse she passes out. After that, she becomes a patient. A patient needs to be cared for. Aubrey may need to take care of her. Thus, Aubrey will go on with the mom. So the answer is: (3) going on with the mom",
+        "answer":"Feedback: The rational is good and do not need to change."
+    },
+    {
+        "question":"Their cat kept trying to escape out of the window, so Jan placed an obstacle in the way. How would Jan feel afterwards? \n (1) scared of losing the cat (2) normal (3) relieved for fixing the problem\nRationale: Since Jan placed an obstacle, the cat can not escape. Thus, there is no problem about losing the cat, and Jan may feel normal. So the answer is: (2) normal.",
+        "answer":"Feedback: The rational is wrong. If a problem is been solved, people will feel relaxed and relieved. Thus, Jan will fell relieved for fixing the problem."
+    },
+    {
+        "question":"Sydney had so much pent up emotion, they burst into tears at work. How would Sydney feel afterwards? \n (1) affected (2) like they released their tension (3) worse\nRationale: Crying is often a way to change one's mood. Since Sydney burst into tears at work, her mood will be affected. So the answer is: (1) affected",
+        "answer":"Feedback: The rational is wrong. Crying is often a way to release tension. The word 'affected' is too vague, it's more reasonable that Sydeny get released beacause crying."
+    },
+    {
+        "question":"Sydney got a raise and a new promotion. What does Sydney need to do before this? \n (1) be bad at her job (2) do a good job (3) be lazy\nRationale: To get a raise and a new promotion, Sydney needs to work hard and do a good job. Sydney got a raise and a new promotion. Thus, she need to do a good job before this. So the answer is: (2) do a good job",
+        "answer":"Feedback: The rational is good and do not need to change."
+    }
+]
+
+

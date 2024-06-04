@@ -1,0 +1,24 @@
+[
+    {
+        "question":"How do you flood a room?\n(1) fill it with objects. (2) fill it with water\nQuestion 1: What does flood a room mean?",
+        "answer":"Answer: Flood means to become covered with water."
+    },
+    {
+        "question":"How can I get oil stains out of my driveway?\n(1) Douse each stain with a couple cans of beer. (2) Douse each stain with a couple cans of soda.\nQuestion 1: How to get old stains out? Answer: Oil stains can be removed by dissolving the oil in a solution.\nQuestion 2: What can oil be soluble in?",
+        "answer":"Answer: Oil can be soluble in Sodium carbonate solution. The soda is a kind of sodium carbonate solution. So oil can be soluble in soda."
+    },
+    {
+        "question":"Soothe a painful sunburn.\n(1) Wait until brewed tea bag is cool, then apply on burn. (2) Wait until brewed tea bag is hot, then apply on burn.\nQuestion 1: How to soothe a painfule sunborn?",
+        "answer":"Answer: Sunburn can be alleviated by applying tea bag on burn."
+    },
+    {
+        "question":"What can I use for fuel in an alcohol stove?\n(1) Use acetone. (2) Use vinegar.\nQuestion 1: What properties must the fuel have? Answer: Materials used as fuel must be flammable.\nQuestion 2: What materials are flammable?",
+        "answer":"Answer: Acetone is flammable, while vinegar is not."
+    },
+    {
+        "question":"How can I cut the handles of metal cutlery?\n(1) Use a hand saw to cut the handles. (2) Use a hand drill to cut the handles.\nQuestion 1: (1) What direction of force is needed for cutting?",
+        "answer":"Answer: Cutting requires horizontal force."
+    }
+]
+
+    

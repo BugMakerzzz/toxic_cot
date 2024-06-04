@@ -8,13 +8,16 @@ import numpy as np
 import random
 from tqdm import tqdm
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, AutoModelForSeq2SeqLM
-from prompts.wrap_prompt import LlamaPrompter
 from load_data import CoTLoader, InterventionData
 from transformers.generation.stopping_criteria import StoppingCriteria, StoppingCriteriaList
-from metrics import draw_plot, draw_heat, draw_line_plot, draw_attr_heat
 from functools import partial
+from utils import get_prompter
 
-torch.random.seed = 17
+def setup_seed(seed):
+     torch.manual_seed(seed)
+     torch.cuda.manual_seed_all(seed)
+     torch.backends.cudnn.deterministic = True
+setup_seed(17)
 
 class Model():
     def __init__(self, model_name):
@@ -29,7 +32,7 @@ class Model():
         self.is_pythia = model_name.startswith('pythia')
 
         model_path = f'./model/{model_name}'
-        if self.is_llama:
+        if self.is_llama or self.is_baichuan:
             self.model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16, trust_remote_code=True, device_map='auto') 
             self.model.eval()
         # store model details
@@ -56,7 +59,7 @@ class Model():
             self.get_attention_layer = lambda layer: self.model.gpt_neox.layers[layer].attention
             self.word_emb_layer = self.model.gpt_neox.embed_in
             self.get_neuron_layer = lambda layer: self.model.gpt_neox.layers[layer].mlp
-        elif self.is_llama:
+        elif self.is_llama or self.is_baichuan:
             self.get_attention_layer = lambda layer: self.model.model.layers[layer].self_attn
             self.word_emb_layer = self.model.model.embed_tokens
             self.get_neuron_layer = lambda layer: self.model.model.layers[layer].mlp
@@ -143,14 +146,21 @@ if __name__ == '__main__':
     attn = args.attn
     ## Path 
     model_path = f'./model/{model_name}'
-    cot_file_path  = f'./result/{dataset}/{model_name}_cot_answer_dev_2000.json'
-    base_file_path = f'./result/{dataset}/{model_name}_direct_answer_dev_2000.json'
-    result_path = f'./result/{dataset}/attn-{attn}_cnt-{datalength}_rep_std.json'
+    cot_file_path  = f'./result/{dataset}/{model_name}_cot_answer_2000.json'
+    base_file_path = f'./result/{dataset}/{model_name}_direct_answer_2000.json'
+    result_path = f'./result/{dataset}/{model_name}-{attn}-{datalength}_rep_std.json'
 
     ## Load Model
+    
     model = Model(model_name=model_name)
-    tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)  
-    cot_prompter = LlamaPrompter(dataset=dataset, task='cot_answer')
+    if model_name.startswith('Baichuan'):
+        tokenizer = AutoTokenizer.from_pretrained(model_path,
+                revision="v2.0",
+                use_fast=False,
+                trust_remote_code=True)
+    else:
+        tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)  
+    cot_prompter = get_prompter(model_name=model_name, dataset=dataset, task='cot_answer')
     index = range(datalength)
     dataloader = CoTLoader()
     data, index = dataloader.load_data(cot_file=cot_file_path, base_file=base_file_path, index=index)
@@ -161,7 +171,10 @@ if __name__ == '__main__':
     for key in inter_dic.keys():
         reps[key] = {k:[] for k in range(model.num_layers)}
     for msg in tqdm(data):
-        inter_data = InterventionData(msg, tokenizer, cot_prompter)
+        if model_name.startswith('Baichuan'):
+            inter_data = InterventionData(msg, tokenizer, cot_prompter, model.model)
+        else:
+            inter_data = InterventionData(msg, tokenizer, cot_prompter)
         rep = model.cal_rep(inter_data)
         for key in inter_dic.keys():
             for k in range(model.num_layers):

@@ -1,0 +1,1 @@
+{"max_new_tokens":500, "do_sample":false, "max_length":2000, "res_decoding":false}

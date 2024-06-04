@@ -3,151 +3,178 @@ import torch
 import re
 import argparse
 import json
+import time 
 from tqdm import tqdm
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, AutoModelForSeq2SeqLM
-from prompts.wrap_prompt import LlamaPrompter
 from load_data import DataLoader
-from accelerate import init_empty_weights, load_checkpoint_and_dispatch
-from transformers.generation.stopping_criteria import StoppingCriteria, StoppingCriteriaList
+from utils import llama_generate, baichuan_generate, get_config, get_prompter, chat_generate, mistral_generate
 
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='Llama-2-13b-chat-hf')
 parser.add_argument('--datalength', type=int, default=2)
-parser.add_argument('--split', type=str, default='dev')
 parser.add_argument('--dataset', type=str, default='siqa')
 parser.add_argument('--task', type=str, default='direct_answer')
 parser.add_argument('--icl', type=int, default=5)
-parser.add_argument('--strategy', type=str, default=None)
+parser.add_argument('--shuffle', action='store_true')
 args = parser.parse_args()
 
 
 model_name = args.model
 dataset = args.dataset
 datalength = args.datalength
-split = args.split
 task = args.task
 icl = args.icl
-strategy = args.strategy
-model_path = f'./model/{model_name}'
-result_path = f'./result/{dataset}/{model_name}_{task}_{split}_{datalength}.json'
-if strategy:
-    result_path = f'./result/{dataset}/{model_name}_{task}_{split}_{datalength}_{strategy}.json'
+shuffle = args.shuffle
 
-# config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
-# with init_empty_weights():
-#     model = AutoModelForCausalLM.from_config(config, torch_dtype=torch.float16, trust_remote_code=True)
-#     # model = AutoModelForSeq2SeqLM.from_config(config, torch_dtype=torch.float16, trust_remote_code=True)
-# no_split_modules = model._no_split_modules
-# model = load_checkpoint_and_dispatch(
-#     model, model_path, device_map="auto", no_split_module_classes=no_split_modules
-# )
-model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16, trust_remote_code=True, device_map='auto')
-tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)  
-prompter = LlamaPrompter(dataset=dataset, task=task)
-dataloader = DataLoader(dataset=dataset, data_length=datalength, split=split)
-# sent_model = SentenceTransformer('./model/all-mpnet-base-v2')
-model.eval()
+if model_name.startswith('Vicuna'):
+    model_path = f'/netcache/huggingface/vicuna-13b'
+elif model_name.startswith('Mistral'):
+    model_path = f'/mnt/publiccache/huggingface/Mistral-7B-Instruct-v0.2'
+else:
+    if '70b' in model_name:
+        model_path = '/mnt/publiccache/huggingface/Llama-2-70b-chat-hf'
+    else:    
+        model_path = f'./model/{model_name}'
+result_path = f'./result/{dataset}/{model_name}_{task}_{datalength}.json'
 
-def model_generate(question, strategy):
-    with torch.no_grad():
-        input = prompter.wrap_input(question, icl_cnt=icl)
-        inputs = tokenizer(input, return_tensors="pt")
-        input_ids = inputs["input_ids"].to(model.device)
-        if strategy == 'greedy':
-            output = model.generate(
-                    input_ids=input_ids,
-                    return_dict_in_generate=True,
-                    max_new_tokens=500,
-                    do_sample=False,
-                    stopping_criteria=[stop_criteria],
-                )
-            result = tokenizer.decode(output.sequences[0]).split(' [/INST] ')[-1]
-            pred = result.split(':')[-1]
-        elif strategy == 'beam':
-            output = model.generate(
-                    input_ids=input_ids,
-                    return_dict_in_generate=True,
-                    max_new_tokens=500,
-                    num_beams=5,
-                    # diversity_penalty=1.0,
-                    do_sample=True,
-                    temperature=0.5,
-                    # num_beam_groups=3,
-                    top_k=10,
-                    top_p=0.9,
-                    num_return_sequences=3,
-                    stopping_criteria=[stop_criteria],
-                )
-            result_ls = []
-            preds = []
-            for i in range(3):
-                result = tokenizer.decode(output.sequences[i]).split(' [/INST] ')[-1]
-                pred = result.split(':')[-1].strip()
-                preds.append(pred)
-                result_ls.append(result)
-            pred = max(preds,key=preds.count)
-            result = result_ls
-        else:
-            output = model.generate(
-                    input_ids=input_ids,
-                    return_dict_in_generate=True,
-                    max_new_tokens=500,
-                    stopping_criteria=[stop_criteria],
-                )
-            result = tokenizer.decode(output.sequences[0]).split(' [/INST] ')[-1]
-            pred = result.split(':')[-1]
-        del input_ids
-        del output
-        
-        if dataset == 'gsm8k':
-            match = re.findall(r'[+-]?\d+',pred)
-            if match:
-                pred = int(match[0])
-            else:
-                pred = 0
-        else:
-            match = re.findall(r'[1-5]\)',pred)
-            if match:
-                pred = match[-1][:-1]
-            else:
-                pred = 'None'
-                
-        return result, pred 
+if model_name.startswith('Baichuan'):
+    tokenizer = AutoTokenizer.from_pretrained(model_path,
+        revision="v2.0",
+        use_fast=False,
+        trust_remote_code=True)
+    model = AutoModelForCausalLM.from_pretrained(model_path,
+        revision="v2.0",
+        device_map="auto",
+        torch_dtype=torch.bfloat16,
+        trust_remote_code=True)
+    model.eval()
+elif model_name.startswith('Llama') or model_name.startswith('Vicuna') or model_name.startswith('Mistral'):
+    model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16, trust_remote_code=True, device_map='auto')
+    tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)  
+    model.eval()
+    
 
 
-class KeywordsStoppingCriteria(StoppingCriteria):
-    def __init__(self, keywords_ids:list):
-        self.keywords = keywords_ids
+def setup_seed(seed):
+     torch.manual_seed(seed)
+     torch.cuda.manual_seed_all(seed)
+     torch.backends.cudnn.deterministic = True
+setup_seed(17)
 
-    def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
-        if input_ids[0][-1] in self.keywords:
-            return True
-        return False
 
-stop_words = ['</s>', '<s>', '</s><s>']
-stop_ids = [tokenizer.encode(w)[0] for w in stop_words]
-stop_criteria = KeywordsStoppingCriteria(stop_ids)
+
+dataloader = DataLoader(dataset=dataset, data_length=datalength, shuffle=shuffle)
+prompter = None 
+
 
 correct = 0
 cnt = 0
 results = []
 
+
+def model_generate(question):
+    input = prompter.wrap_input(question, icl_cnt=5)
+    if task == 'sc':
+        config = get_config(model_name=model_name, strategy='beam')
+    elif task in ['cons_answer', 'l2m']:
+        config = get_config(model_name=model_name, strategy='sample')
+    else:
+        config = get_config(model_name=model_name, strategy='greedy')
+    if model_name.startswith('Baichuan'):
+        model.generation_config = config
+        return baichuan_generate(model, tokenizer, input, task)
+    elif model_name.startswith('Chat'):
+        return chat_generate(input, task)    
+    elif model_name.startswith('Mistral'):
+        return mistral_generate(model, config, tokenizer, input, task)
+    else:
+        return llama_generate(model, config, tokenizer, input, task)
+
+cost = 0
+if task == 'dpr':
+    path = f'./{task}_{dataset}_documents.json'
+    with open(path, 'r') as f:
+        documents = json.load(f)
 for data in tqdm(dataloader):
+    start = time.time()
     question = data['question']
     label = data['label']
-    # idx = dataloader.idx - 1 
-    result, pred = model_generate(question, strategy)
+    if task == 'l2m':
+        prompter = get_prompter(model_name, dataset, 'l2m_question')
+        result, _ = model_generate(question)
+        split_result = result.split('\n')
+        questions = []
+        for q in split_result[1:]:
+            if 'Question' in q:
+                questions.append(q)
+        prompter = get_prompter(model_name, dataset, 'l2m_mid_answer')
+        for q in questions:
+           question += '\n' + q
+           result, _ = model_generate(question)
+           question += " " + result.split('\n')[0]
+        prompter = get_prompter(model_name, dataset, 'l2m_final_answer')
+        result, pred = model_generate(question)
+        prompter = get_prompter(model_name, dataset, 'l2m_question')
+    elif task == 'sr':
+        prompter = get_prompter(model_name, dataset, 'cot_answer')
+        result, _ = model_generate(question)
+        question += '\nRationale: ' + result
+        prompter = get_prompter(model_name, dataset, 'sr_feedback')
+        result, _ = model_generate(question)
+        question += ' ' + result
+        prompter = get_prompter(model_name, dataset, 'sr_answer')
+        result, pred = model_generate(question)
+    elif task == 'cons_answer':
+        prompter = get_prompter(model_name, dataset, 'cons_answer')
+        result, pred = model_generate(question)
+    elif task == 'direct_answer':
+        prompter = get_prompter(model_name, dataset, 'direct_answer')
+        result, pred = model_generate(question)
+    elif task == 'dpr':   
+        if dataset in ['wino','piqa']:
+            width = 2 
+        elif dataset == 'hella':
+            width = 3
+        else:
+            width = 4
+        document = ""
+        for i in range(cnt, cnt+width):
+            document += documents[i]['ctxs'][0]['text'] + '. '
+        question =  document + question  
+        prompter = get_prompter(model_name, dataset, 'direct_answer')
+        result, pred = model_generate(question)
+    elif task == 'bm25':   
+        prompter = get_prompter(model_name, dataset, 'cot_answer')
+        result, pred = model_generate(question)
+    else:   
+        prompter = get_prompter(model_name, dataset, 'cot_answer')
+        result, pred = model_generate(question)
+    if dataset != 'gsm8k':
+        match = re.findall(r'[1-5]\)',pred)
+        if match:
+            pred = match[0][:-1]
+        else:
+            pred = 'None'
+    else:
+        output = pred.split('\n')
+        output = [line for line in output if len(re.findall('\d+', line)) > 0][-1]
+        answer = output.replace(',', '')  # remove middle ',' from numbers like '1,234'
+        answer = re.findall('\d+', answer)
+        pred = label if label in answer else answer[-1]
+        pred = answer.strip()
     cor_flag = (pred == label)
     cnt += 1
+    end = time.time()
+    cost += end - start 
     if cor_flag:
         correct += 1
     msg = {'question':question, 'answer':result, 'pred':pred, 'label':label, 'cor_flag':cor_flag}
     results.append(msg)
-    
     torch.cuda.empty_cache()
     
 results.append({'acc':correct/cnt})
 print(f'Acc:{correct/cnt}')
+print(f'Time:{cost/cnt}')
 with open(result_path, 'w', encoding='utf-8') as f:
     json.dump(results, f, indent=4)

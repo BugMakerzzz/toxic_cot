@@ -1,0 +1,24 @@
+[
+    {
+        "question":"Quinn wanted to help me clean my room up because it was so messy. What will Quinn want to do next? \n (1) Eat messy snacks (2) help out a friend (3) Pick up the dirty clothes ",
+        "answer":"To solve the question, we need to solve these subquestions:\nQuestion 1: What should a person do if she want to help clean the room?\nQuestion 2: What will Quinn want to do next?"
+    },
+    {
+        "question":"Sasha's mom passed out in the middle of the party. Aubrey took Sasha's mom to the hospital. What will Aubrey want to do next? \n (1) help Aubrey go back home (2) keep on partying without the mom (3) going on with the mom ",
+        "answer":"To solve the question, we need to solve these subquestions:\nQuestion 1: What does Sasha's mom need if she pass out and go to the hospital?\nQuestion 2: What will Aubrey want to do next?"
+    },
+    {
+        "question":"Their cat kept trying to escape out of the window, so Jan placed an obstacle in the way. How would Jan feel afterwards? \n (1) scared of losing the cat (2) normal (3) relieved for fixing the problem ",
+        "answer":"To solve the question, we need to solve these subquestions:\nQuestion 1: What will happen if Jan placed an obstacle in the way?\nQuestion 2: How would Jan feel afterwards?"
+    },
+    {
+        "question":"Sydney had so much pent up emotion, they burst into tears at work. How would Sydney feel afterwards? \n (1) affected (2) like they released their tension (3) worse ",
+        "answer":"To solve the question, we need to solve these subquestions:\nQuestion 1: What will happen if someone burst into tears at work?\nQuestion 2: How would Sydney feel afterwards?"
+    },
+    {
+        "question":"Sydney got a raise and a new promotion. What does Sydney need to do before this? \n (1) be bad at her job (2) do a good job (3) be lazy ",
+        "answer":"To solve the question, we need to solve these subquestions:\nQuestion 1: Why does Sydney got a raise and a new promotion?\nQuestion 2: What does Sydney need to do before this?"
+    }
+]
+
+
