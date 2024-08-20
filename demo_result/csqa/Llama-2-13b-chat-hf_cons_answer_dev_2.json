@@ -1,0 +1,19 @@
+[
+    {
+        "question": "Where could you find hundreds of thousands of home?\n(1) field (2) neighborhood (3) star can (4) city or town (5) apartment building ",
+        "answer": " Explanation: Hundreds of thousands of homes can be found in a city or town.\nAnswer: (4) city or town.\nWrong Explanation: Hundreds of thousands of homes can be found in a field.\nWrong Answer: (1) field.</s>",
+        "pred": "4",
+        "label": "4",
+        "cor_flag": true
+    },
+    {
+        "question": "Most people who are family like to greet each other with a what?\n(1) apartments (2) listen to music (3) have friends (4) know what ophiolites (5) hug ",
+        "answer": " Explanation: People who are family usually greet each other with a hug.\nAnswer: (5) hug.\nWrong Explanation: People who are family usually greet each other with a listen to music.\nWrong Answer: (2) listen to music.</s>",
+        "pred": "5",
+        "label": "5",
+        "cor_flag": true
+    },
+    {
+        "acc": 1.0
+    }
+]
