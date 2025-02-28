@@ -13,7 +13,7 @@ This repository hosts the codes of our work: ***"Focus on Your Question! Interpr
 ### 1. Installation
 
 ```python
-git clone https://github.com/jinzhuoran/toxic_cot.git
+git clone https://github.com/BugMakerzzz/toxic_cot.git
 cd toxic_cot
 pip install -r requirements.txt
 ```
